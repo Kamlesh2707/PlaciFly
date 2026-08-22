@@ -1,0 +1,903 @@
+{
+  "session-15399": [
+    {
+      "question_hash": "68f11598f13c1b23",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Basic data types and variables",
+      "category": "Technical",
+      "question_preview": "In the context of TCS's technology stack, explain Basic data types and variables. How would you appl",
+      "timestamp": 1785511684.2022965
+    }
+  ],
+  "session-10591": [
+    {
+      "question_hash": "4cbd28ca5c7494aa",
+      "company": "Amazon",
+      "difficulty": "Medium",
+      "topic": "System Design basics (URL shortener, parking lot)",
+      "category": "Technical",
+      "question_preview": "In the context of Amazon's technology stack, explain System Design basics (URL shortener, parking lo",
+      "timestamp": 1785511699.1560621
+    }
+  ],
+  "session-93785": [
+    {
+      "question_hash": "64d37fd0d2ff7b00",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "HashMap internal working",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses HashMap internal working. Walk me through how yo",
+      "timestamp": 1785511842.8221745
+    }
+  ],
+  "session-74096": [
+    {
+      "question_hash": "2051a1d9100202d8",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "HTTP status codes (200, 201, 401, 404, 500)",
+      "category": "Technical",
+      "question_preview": "I noticed your project uses some concepts related to HTTP status codes (200, 201, 401, 404, 500). Ho",
+      "timestamp": 1785511842.8479085
+    }
+  ],
+  "session-10775": [
+    {
+      "question_hash": "23d1de296f1076ad",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "SQL 2nd highest salary query (subquery and DENSE_RANK)",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses SQL 2nd highest salary query (subquery and DENSE",
+      "timestamp": 1785511842.8813465
+    }
+  ],
+  "session-56560": [
+    {
+      "question_hash": "49ee2f7bb4c07fcd",
+      "company": "Amazon",
+      "difficulty": "Hard",
+      "topic": "DynamoDB auto-scaling and partition key design",
+      "category": "Technical",
+      "question_preview": "Let's discuss DynamoDB auto-scaling and partition key design. First, explain the fundamentals. Then,",
+      "timestamp": 1785511854.9075089
+    }
+  ],
+  "session-31340": [
+    {
+      "question_hash": "b9133a2c8bd40d63",
+      "company": "Google",
+      "difficulty": "Hard",
+      "topic": "Real-time stream processing at scale",
+      "category": "Technical",
+      "question_preview": "At Google, we recently had a production issue related to Real-time stream processing at scale. How w",
+      "timestamp": 1785511854.9512396
+    }
+  ],
+  "session-68411": [
+    {
+      "question_hash": "759c87f64223cc64",
+      "company": "Deloitte",
+      "difficulty": "Hard",
+      "topic": "Real-time analytics pipeline (Kafka + Spark Streaming)",
+      "category": "Technical",
+      "question_preview": "At Deloitte, we recently had a production issue related to Real-time analytics pipeline (Kafka + Spa",
+      "timestamp": 1785511854.9997184
+    }
+  ],
+  "session-84413": [
+    {
+      "question_hash": "d943e735e9fe4ad4",
+      "company": "Meta",
+      "difficulty": "Hard",
+      "topic": "Custom React Virtual DOM implementation",
+      "category": "Technical",
+      "question_preview": "Let's discuss Custom React Virtual DOM implementation. First, explain the fundamentals. Then, tell m",
+      "timestamp": 1785511855.0440955
+    }
+  ],
+  "session-88387": [
+    {
+      "question_hash": "18cde1f7c1df15af",
+      "company": "Netflix",
+      "difficulty": "Hard",
+      "topic": "Content recommendation system design",
+      "category": "Technical",
+      "question_preview": "We're working on a project at Netflix that heavily uses Content recommendation system design. Walk m",
+      "timestamp": 1785511855.0862496
+    }
+  ],
+  "global": [
+    {
+      "question_hash": "e2c832e76183bdeb",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Technical",
+      "question_preview": "Let's discuss SQL SELECT, INSERT, UPDATE, DELETE. First, explain the fundamentals. Then, tell me how",
+      "timestamp": 1785512015.6506326
+    },
+    {
+      "question_hash": "78f519ad99dafb01",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "For loop and while loop syntax",
+      "category": "Technical",
+      "question_preview": "I noticed your project uses some concepts related to For loop and while loop syntax. How would you i",
+      "timestamp": 1785512025.3023925
+    },
+    {
+      "question_hash": "2cc342c41ef099a3",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "HTTP status codes (200, 201, 401, 404, 500)",
+      "category": "Technical",
+      "question_preview": "Let's discuss HTTP status codes (200, 201, 401, 404, 500). First, explain the fundamentals. Then, te",
+      "timestamp": 1785512044.541242
+    },
+    {
+      "question_hash": "f5a58efd4dd7b52a",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "REST API design (GET, POST, PUT, DELETE)",
+      "category": "Technical",
+      "question_preview": "In our team at TCS, REST API design (GET, POST, PUT, DELETE) comes up frequently. Can you explain th",
+      "timestamp": 1785512053.2673507
+    },
+    {
+      "question_hash": "89b53d49411cb7a6",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Java basics (JDK vs JRE vs JVM)",
+      "category": "Technical",
+      "question_preview": "In our team at TCS, Java basics (JDK vs JRE vs JVM) comes up frequently. Can you explain the core pr",
+      "timestamp": 1785512059.5185137
+    },
+    {
+      "question_hash": "ab56ec505174a474",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Reverse a string with loop",
+      "category": "Coding",
+      "question_preview": "Your coding challenge is: Reverse a string with loop. Before writing code, discuss at least two appr",
+      "timestamp": 1785512068.1976604
+    },
+    {
+      "question_hash": "104800f4a354fa78",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Simple project walkthrough (2 minutes)",
+      "category": "Case Study",
+      "question_preview": "Imagine you're consulting for a TCS client facing critical performance issues in their Simple projec",
+      "timestamp": 1785512073.9791448
+    },
+    {
+      "question_hash": "4d9c67ba2d936091",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "Deadlock conditions (Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait)",
+      "category": "Technical",
+      "question_preview": "Explain Deadlock conditions (Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait) to me as i",
+      "timestamp": 1785512084.1711285
+    },
+    {
+      "question_hash": "8ccc2fcd02204d6d",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Reverse a string with loop",
+      "category": "Coding",
+      "question_preview": "Here's your coding problem: Reverse a string with loop. First, clarify any assumptions, then write a",
+      "timestamp": 1785581790.2052362
+    },
+    {
+      "question_hash": "331c9d3f07deee90",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "For loop and while loop syntax",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Strengths and weaknesses' was critical. How did you approach",
+      "timestamp": 1785585256.8409567
+    },
+    {
+      "question_hash": "b56ac25b9fa4a738",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Why this company'. Paint me a picture of a time you navigated this well. What woul",
+      "timestamp": 1785585459.4215028
+    },
+    {
+      "question_hash": "331c9d3f07deee90",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "String manipulation basics",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Strengths and weaknesses' was critical. How did you approach",
+      "timestamp": 1785585535.4081988
+    },
+    {
+      "question_hash": "3a0b472ea335baf3",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Behavioral",
+      "question_preview": "At TCS, 'Why this company' is something we value deeply. Share an example from your experience that ",
+      "timestamp": 1785585598.2833002
+    },
+    {
+      "question_hash": "16ae765846801cef",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "OOP four pillars (Encapsulation, Abstraction, Inheritance, Polymorphism)",
+      "category": "Behavioral",
+      "question_preview": "Tell me about a specific time when you had to demonstrate 'Strengths and weaknesses'. What was the s",
+      "timestamp": 1785585649.64537
+    },
+    {
+      "question_hash": "d194c3cbd7c3dcd6",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "Process vs Thread in OS",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Team conflict resolution' was critical. How did you approach",
+      "timestamp": 1785585657.2026937
+    },
+    {
+      "question_hash": "2fc6b5a116f8e3a1",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Technical",
+      "question_preview": "At TCS, we recently had a production issue related to SQL SELECT, INSERT, UPDATE, DELETE. How would ",
+      "timestamp": 1785585664.6707978
+    },
+    {
+      "question_hash": "82216d9432310586",
+      "company": "Accenture",
+      "difficulty": "Medium",
+      "topic": "REST API implementation",
+      "category": "Coding",
+      "question_preview": "Your coding challenge is: REST API implementation. Before writing code, discuss at least two approac",
+      "timestamp": 1785585674.764847
+    },
+    {
+      "question_hash": "3d00521b1ddd288f",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "HashMap internal working",
+      "category": "Technical",
+      "question_preview": "I noticed your project uses some concepts related to HashMap internal working. How would you impleme",
+      "timestamp": 1785585700.1046705
+    },
+    {
+      "question_hash": "c198077c6ca8334f",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Array vs ArrayList in Java",
+      "category": "Technical",
+      "question_preview": "In our team at TCS, Array vs ArrayList in Java comes up frequently. Can you explain the core princip",
+      "timestamp": 1785586373.5398889
+    },
+    {
+      "question_hash": "4e40f47f6f349f75",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "B-Tree indexing for query optimization",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses B-Tree indexing for query optimization. Walk me ",
+      "timestamp": 1785586373.580852
+    },
+    {
+      "question_hash": "ae697e7e97d0ec87",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "Linked List reversal",
+      "category": "Coding",
+      "question_preview": "Here's your coding problem: Linked List reversal. First, clarify any assumptions, then write an opti",
+      "timestamp": 1785586373.6193714
+    },
+    {
+      "question_hash": "4962d062b0480d0a",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "HTTP vs HTTPS (port 80 vs 443)",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Tell me about your project'. Paint me a picture of a time you navigated this well.",
+      "timestamp": 1785586373.658804
+    },
+    {
+      "question_hash": "de1aa418ed7d9d69",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "For loop and while loop syntax",
+      "category": "Behavioral",
+      "question_preview": "Tell me about a specific time when you had to demonstrate 'Self-introduction'. What was the situatio",
+      "timestamp": 1785588746.4371
+    },
+    {
+      "question_hash": "d3d8ef4caa6760db",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "For loop and while loop syntax",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Self-introduction' was critical. How did you approach it, an",
+      "timestamp": 1785588787.635574
+    },
+    {
+      "question_hash": "d3d8ef4caa6760db",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "HTTP vs HTTPS (port 80 vs 443)",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Self-introduction' was critical. How did you approach it, an",
+      "timestamp": 1786461997.208311
+    },
+    {
+      "question_hash": "de1aa418ed7d9d69",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "HTTP vs HTTPS (port 80 vs 443)",
+      "category": "Behavioral",
+      "question_preview": "Tell me about a specific time when you had to demonstrate 'Self-introduction'. What was the situatio",
+      "timestamp": 1786462033.3100047
+    },
+    {
+      "question_hash": "32a5f671f5348db4",
+      "company": "TCS",
+      "difficulty": "Hard",
+      "topic": "Table partitioning (range, hash, list)",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Ethical dilemma at work'. Paint me a picture of a time you navigated this well. Wh",
+      "timestamp": 1786463783.1440773
+    },
+    {
+      "question_hash": "4c4558e28a218680",
+      "company": "TCS",
+      "difficulty": "Hard",
+      "topic": "API Gateway and service mesh patterns",
+      "category": "Behavioral",
+      "question_preview": "I want to understand how you handle 'Leadership in crisis'. Can you walk me through a real experienc",
+      "timestamp": 1786463800.7045405
+    },
+    {
+      "question_hash": "23d1de296f1076ad",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "SQL 2nd highest salary query (subquery and DENSE_RANK)",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses SQL 2nd highest salary query (subquery and DENSE",
+      "timestamp": 1787300667.375955
+    },
+    {
+      "question_hash": "64d37fd0d2ff7b00",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "HashMap internal working",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses HashMap internal working. Walk me through how yo",
+      "timestamp": 1787300754.676889
+    },
+    {
+      "question_hash": "65a049d75d17d0c6",
+      "company": "Amazon",
+      "difficulty": "Easy",
+      "topic": "Hash Map fundamentals",
+      "category": "Behavioral",
+      "question_preview": "Give me a concrete example where you showed 'Why Amazon'. I'm looking for specifics — what happened,",
+      "timestamp": 1787300861.8914273
+    },
+    {
+      "question_hash": "2148b5e2e3db36b4",
+      "company": "Deloitte",
+      "difficulty": "Easy",
+      "topic": "Data types and structures",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Communication skills'. Paint me a picture of a time you navigated this well. What ",
+      "timestamp": 1787300870.144082
+    },
+    {
+      "question_hash": "3957a873f581fc64",
+      "company": "Deloitte",
+      "difficulty": "Easy",
+      "topic": "Difference between WHERE and HAVING",
+      "category": "Behavioral",
+      "question_preview": "Give me a concrete example where you showed 'Why consulting'. I'm looking for specifics — what happe",
+      "timestamp": 1787300950.6049619
+    },
+    {
+      "question_hash": "09545491f035a2f4",
+      "company": "Google",
+      "difficulty": "Easy",
+      "topic": "String processing",
+      "category": "Behavioral",
+      "question_preview": "Tell me about a specific time when you had to demonstrate 'Why Google'. What was the situation, what",
+      "timestamp": 1787301077.7303798
+    },
+    {
+      "question_hash": "6a5545689aecb61f",
+      "company": "Google",
+      "difficulty": "Easy",
+      "topic": "Two pointer technique",
+      "category": "Behavioral",
+      "question_preview": "At Google, 'Describe a technical challenge' is something we value deeply. Share an example from your",
+      "timestamp": 1787301149.8798354
+    },
+    {
+      "question_hash": "c815a5443efa9641",
+      "company": "Netflix",
+      "difficulty": "Easy",
+      "topic": "Garbage Collection basics",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Culture alignment (Freedom & Responsibility)'. Paint me a picture of a time you na",
+      "timestamp": 1787314142.6677604
+    },
+    {
+      "question_hash": "177d3cf9ad7a845d",
+      "company": "Netflix",
+      "difficulty": "Easy",
+      "topic": "HTTP status codes",
+      "category": "Technical",
+      "question_preview": "We're working on a project at Netflix that heavily uses HTTP status codes. Walk me through how you u",
+      "timestamp": 1787314847.066005
+    },
+    {
+      "question_hash": "83505222b23afbe5",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Simple project walkthrough (2 minutes)",
+      "category": "Behavioral",
+      "question_preview": "At TCS, 'Tell me about your project' is something we value deeply. Share an example from your experi",
+      "timestamp": 1787322765.9504402
+    },
+    {
+      "question_hash": "f4452a82bc578b9b",
+      "company": "Infosys",
+      "difficulty": "Easy",
+      "topic": "Java String immutability and String Pool",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Educational background' was critical. How did you approach i",
+      "timestamp": 1787327372.1438124
+    }
+  ],
+  "session-13098": [
+    {
+      "question_hash": "3cd5d6209e171ae7",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Basic data types and variables",
+      "category": "Technical",
+      "question_preview": "Let's discuss Basic data types and variables. First, explain the fundamentals. Then, tell me how you",
+      "timestamp": 1785512015.7301002
+    }
+  ],
+  "session-22166": [
+    {
+      "question_hash": "0506f1c0819a72cf",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Simple project walkthrough (2 minutes)",
+      "category": "Technical",
+      "question_preview": "At TCS, we recently had a production issue related to Simple project walkthrough (2 minutes). How wo",
+      "timestamp": 1785512025.3956697
+    }
+  ],
+  "session-55913": [
+    {
+      "question_hash": "63accf743913f1ca",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "Exception handling (checked vs unchecked in Java)",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses Exception handling (checked vs unchecked in Java",
+      "timestamp": 1785512044.6273496
+    }
+  ],
+  "session-83943": [
+    {
+      "question_hash": "e6da744c7a40febb",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "B-Tree indexing for query optimization",
+      "category": "Technical",
+      "question_preview": "Let's discuss B-Tree indexing for query optimization. First, explain the fundamentals. Then, tell me",
+      "timestamp": 1785512053.3902388
+    }
+  ],
+  "session-22068": [
+    {
+      "question_hash": "6fcc759b6839e8ce",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Technical",
+      "question_preview": "Explain SQL SELECT, INSERT, UPDATE, DELETE to me as if you were onboarding a new team member at TCS.",
+      "timestamp": 1785512059.603866
+    }
+  ],
+  "session-25491": [
+    {
+      "question_hash": "03d7ade01051d0dd",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Check prime number",
+      "category": "Coding",
+      "question_preview": "Here's your coding problem: Check prime number. First, clarify any assumptions, then write an optima",
+      "timestamp": 1785512068.291071
+    }
+  ],
+  "session-57287": [
+    {
+      "question_hash": "75e3422f41eea104",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "HTTP vs HTTPS (port 80 vs 443)",
+      "category": "Case Study",
+      "question_preview": "A retail client's HTTP vs HTTPS (port 80 vs 443) pipeline is processing 50% fewer transactions than ",
+      "timestamp": 1785512074.0795832
+    }
+  ],
+  "session-99868": [
+    {
+      "question_hash": "e7c99e07c9c94ae7",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "Process vs Thread in OS",
+      "category": "Technical",
+      "question_preview": "Explain Process vs Thread in OS to me as if you were onboarding a new team member at TCS. Then, desc",
+      "timestamp": 1785512084.2465708
+    }
+  ],
+  "session-90494": [
+    {
+      "question_hash": "3acb280d788a21c1",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Array vs ArrayList in Java",
+      "category": "Behavioral",
+      "question_preview": "I want to understand how you handle 'Self-introduction'. Can you walk me through a real experience f",
+      "timestamp": 1785585256.924218
+    }
+  ],
+  "session-12911": [
+    {
+      "question_hash": "976bf7078db92cae",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "String manipulation basics",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Self-introduction'. Paint me a picture of a time you navigated this well. What wou",
+      "timestamp": 1785585535.4884217
+    }
+  ],
+  "session-34425": [
+    {
+      "question_hash": "331c9d3f07deee90",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Java basics (JDK vs JRE vs JVM)",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Strengths and weaknesses' was critical. How did you approach",
+      "timestamp": 1785585649.7393193
+    }
+  ],
+  "session-89559": [
+    {
+      "question_hash": "7c803e22329e4a8b",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "DBMS Normalization (1NF, 2NF, 3NF)",
+      "category": "Behavioral",
+      "question_preview": "Give me a concrete example where you showed 'Disagreement with manager'. I'm looking for specifics —",
+      "timestamp": 1785585657.2922916
+    }
+  ],
+  "session-69310": [
+    {
+      "question_hash": "0506f1c0819a72cf",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Simple project walkthrough (2 minutes)",
+      "category": "Technical",
+      "question_preview": "At TCS, we recently had a production issue related to Simple project walkthrough (2 minutes). How wo",
+      "timestamp": 1785585664.760073
+    }
+  ],
+  "session-75000": [
+    {
+      "question_hash": "85312075cddbc488",
+      "company": "Accenture",
+      "difficulty": "Medium",
+      "topic": "REST API implementation",
+      "category": "Coding",
+      "question_preview": "I'd like you to solve this coding challenge: REST API implementation. Walk me through your approach ",
+      "timestamp": 1785585674.8565097
+    }
+  ],
+  "test-session-001": [
+    {
+      "question_hash": "46bdeab1e4ce1c5b",
+      "company": "Amazon",
+      "difficulty": "Medium",
+      "topic": "Two Pointers approach",
+      "category": "Technical",
+      "question_preview": "In our team at Amazon, Two Pointers approach comes up frequently. Can you explain the core principle",
+      "timestamp": 1785588647.885267
+    }
+  ],
+  "session-12691": [
+    {
+      "question_hash": "4962d062b0480d0a",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Basic data types and variables",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Tell me about your project'. Paint me a picture of a time you navigated this well.",
+      "timestamp": 1785588746.5142279
+    }
+  ],
+  "session-30638": [
+    {
+      "question_hash": "3a0b472ea335baf3",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Java basics (JDK vs JRE vs JVM)",
+      "category": "Behavioral",
+      "question_preview": "At TCS, 'Why this company' is something we value deeply. Share an example from your experience that ",
+      "timestamp": 1786461997.2773001
+    }
+  ],
+  "session-32049": [
+    {
+      "question_hash": "1a7d88bf98317d12",
+      "company": "TCS",
+      "difficulty": "Hard",
+      "topic": "Distributed caching with Redis cluster",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Cross-team dependency resolution'. Paint me a picture of a time you navigated this",
+      "timestamp": 1786463783.214638
+    }
+  ],
+  "session-65107": [
+    {
+      "question_hash": "ffb83f1ce799b068",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "Deadlock conditions (Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait)",
+      "category": "Technical",
+      "question_preview": "In our team at TCS, Deadlock conditions (Mutual Exclusion, Hold & Wait, No Preemption, Circular Wait",
+      "timestamp": 1787300667.401776
+    }
+  ],
+  "diag-101": [
+    {
+      "question_hash": "7474f0101fde85f9",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "SQL 2nd highest salary query (subquery and DENSE_RANK)",
+      "category": "Technical",
+      "question_preview": "Explain SQL 2nd highest salary query (subquery and DENSE_RANK) to me as if you were onboarding a new",
+      "timestamp": 1787300667.434864
+    },
+    {
+      "question_hash": "f5a58efd4dd7b52a",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "REST API design (GET, POST, PUT, DELETE)",
+      "category": "Technical",
+      "question_preview": "In our team at TCS, REST API design (GET, POST, PUT, DELETE) comes up frequently. Can you explain th",
+      "timestamp": 1787300754.7349837
+    }
+  ],
+  "session-10656": [
+    {
+      "question_hash": "ff5955a5be9e3024",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "HashMap internal working",
+      "category": "Technical",
+      "question_preview": "Explain HashMap internal working to me as if you were onboarding a new team member at TCS. Then, des",
+      "timestamp": 1787300754.7027352
+    }
+  ],
+  "session-89358": [
+    {
+      "question_hash": "de3e5e6875341984",
+      "company": "Amazon",
+      "difficulty": "Easy",
+      "topic": "Simple data structure operations (stack, queue)",
+      "category": "Behavioral",
+      "question_preview": "Let's talk about 'Why Amazon'. Paint me a picture of a time you navigated this well. What would you ",
+      "timestamp": 1787300861.9755402
+    }
+  ],
+  "session-27837": [
+    {
+      "question_hash": "3957a873f581fc64",
+      "company": "Deloitte",
+      "difficulty": "Easy",
+      "topic": "Difference between WHERE and HAVING",
+      "category": "Behavioral",
+      "question_preview": "Give me a concrete example where you showed 'Why consulting'. I'm looking for specifics — what happe",
+      "timestamp": 1787300870.1952162
+    }
+  ],
+  "session-78327": [
+    {
+      "question_hash": "aacb974dfa978c6c",
+      "company": "Google",
+      "difficulty": "Easy",
+      "topic": "Hash tables",
+      "category": "Behavioral",
+      "question_preview": "At Google, 'Why Google' is something we value deeply. Share an example from your experience that sho",
+      "timestamp": 1787301077.8081138
+    }
+  ],
+  "session-96301": [
+    {
+      "question_hash": "4621b47dfd216a12",
+      "company": "Amazon",
+      "difficulty": "Medium",
+      "topic": "Binary Tree traversals (inorder, preorder, postorder)",
+      "category": "Behavioral",
+      "question_preview": "I want to understand how you handle 'Dive Deep — debugging complex issue'. Can you walk me through a",
+      "timestamp": 1787303734.6798408
+    }
+  ],
+  "session-82721": [
+    {
+      "question_hash": "cd8f7e6afed34d50",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "String manipulation basics",
+      "category": "Behavioral",
+      "question_preview": "Tell me about a specific time when you had to demonstrate 'Tell me about your project'. What was the",
+      "timestamp": 1787306442.2255924
+    }
+  ],
+  "session-21449": [
+    {
+      "question_hash": "303aeba4fc600c23",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Behavioral",
+      "question_preview": "I want to understand how you handle 'Why this company'. Can you walk me through a real experience fr",
+      "timestamp": 1787313399.9436166
+    }
+  ],
+  "session-14688": [
+    {
+      "question_hash": "7187ed52c299bdc5",
+      "company": "Netflix",
+      "difficulty": "Easy",
+      "topic": "Garbage Collection basics",
+      "category": "Behavioral",
+      "question_preview": "Give me a concrete example where you showed 'Culture alignment (Freedom & Responsibility)'. I'm look",
+      "timestamp": 1787313963.2824075
+    }
+  ],
+  "session-30155": [
+    {
+      "question_hash": "874e88010977a617",
+      "company": "Netflix",
+      "difficulty": "Easy",
+      "topic": "HTTP status codes",
+      "category": "Technical",
+      "question_preview": "Let's discuss HTTP status codes. First, explain the fundamentals. Then, tell me how you'd apply it s",
+      "timestamp": 1787314766.7047393
+    }
+  ],
+  "session-43324": [
+    {
+      "question_hash": "b6cab5990e980ed7",
+      "company": "Netflix",
+      "difficulty": "Easy",
+      "topic": "Basic recursion",
+      "category": "Coding",
+      "question_preview": "Here's your coding problem: Basic recursion. First, clarify any assumptions, then write an optimal s",
+      "timestamp": 1787315027.549287
+    }
+  ],
+  "session-91342": [
+    {
+      "question_hash": "fd14ce6c1ad36844",
+      "company": "Netflix",
+      "difficulty": "Easy",
+      "topic": "Object-oriented principles",
+      "category": "Case Study",
+      "question_preview": "You're leading a Netflix engagement where the client needs to modernize their Object-oriented princi",
+      "timestamp": 1787315103.733749
+    }
+  ],
+  "session-27106": [
+    {
+      "question_hash": "b530d9c5276bc986",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "HTTP vs HTTPS (port 80 vs 443)",
+      "category": "Behavioral",
+      "question_preview": "I want to understand how you handle 'Tell me about your project'. Can you walk me through a real exp",
+      "timestamp": 1787322685.9586923
+    }
+  ],
+  "session-15368": [
+    {
+      "question_hash": "903571fc8eba1a4c",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Simple project walkthrough (2 minutes)",
+      "category": "Technical",
+      "question_preview": "Explain Simple project walkthrough (2 minutes) to me as if you were onboarding a new team member at ",
+      "timestamp": 1787322848.4548984
+    }
+  ],
+  "session-79294": [
+    {
+      "question_hash": "48060e3be09db32b",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "String manipulation basics",
+      "category": "Technical",
+      "question_preview": "In our team at TCS, String manipulation basics comes up frequently. Can you explain the core princip",
+      "timestamp": 1787323073.340987
+    }
+  ],
+  "session-40184": [
+    {
+      "question_hash": "64b39c5663d05eb4",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses SQL SELECT, INSERT, UPDATE, DELETE. Walk me thro",
+      "timestamp": 1787324438.4016404
+    }
+  ],
+  "session-90556": [
+    {
+      "question_hash": "83505222b23afbe5",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "Array vs ArrayList in Java",
+      "category": "Behavioral",
+      "question_preview": "At TCS, 'Tell me about your project' is something we value deeply. Share an example from your experi",
+      "timestamp": 1787326306.0948896
+    }
+  ],
+  "session-41609": [
+    {
+      "question_hash": "e2a5b502b4edc5ad",
+      "company": "Infosys",
+      "difficulty": "Easy",
+      "topic": "Java String immutability and String Pool",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Why IT industry' was critical. How did you approach it, and ",
+      "timestamp": 1787327241.42181
+    }
+  ],
+  "session-47994": [
+    {
+      "question_hash": "bb728accaa80e8f6",
+      "company": "Infosys",
+      "difficulty": "Easy",
+      "topic": "Array vs LinkedList",
+      "category": "Technical",
+      "question_preview": "I noticed your project uses some concepts related to Array vs LinkedList. How would you implement th",
+      "timestamp": 1787327522.0928946
+    }
+  ],
+  "session-72973": [
+    {
+      "question_hash": "a7dad7d2d586fbd0",
+      "company": "Infosys",
+      "difficulty": "Easy",
+      "topic": "Basic networking (TCP/IP, DNS)",
+      "category": "Technical",
+      "question_preview": "We're working on a project at Infosys that heavily uses Basic networking (TCP/IP, DNS). Walk me thro",
+      "timestamp": 1787334718.9432795
+    }
+  ]
+}

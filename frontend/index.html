@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placifly — Your Career. Your Journey. Your Placifly. | AI Placement & Interview Preparation Platform</title>
+  <link rel="icon" type="image/png" href="assets/logo.png">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Custom Placifly Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="flex flex-col min-h-screen">
+
+  <!-- ==================================================== -->
+  <!-- 1. FIRST-OPEN INTRO SPLASH & AIRPLANE FLIGHT ANIMATION -->
+  <!-- ==================================================== -->
+  <div id="intro-splash">
+    <canvas id="flight-intro-canvas" class="intro-flight-canvas"></canvas>
+    
+    <div class="intro-content-wrapper">
+      <div class="intro-logo-box">
+        <img src="assets/logo.png" alt="Placifly Logo" class="intro-logo-img">
+      </div>
+      
+      <div class="intro-tagline">
+        Your Career. Your Journey. Your Placifly.
+      </div>
+      
+      <p class="intro-desc">
+        Practice smarter. Interview better. Reach your dream company.
+      </p>
+      
+      <div class="intro-btn-wrap">
+        <button class="btn-placifly-primary text-base" onclick="dismissIntroSplash()">
+          <span>Get Started</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <button class="absolute top-6 right-6 text-xs text-slate-400 hover:text-cyan-400 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition-colors" onclick="dismissIntroSplash()">
+      Skip Intro ✕
+    </button>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- 2. STICKY NAVIGATION BAR                            -->
+  <!-- ==================================================== -->
+  <header class="placifly-navbar">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="javascript:void(0)" onclick="switchPlaciflyView('home')" class="flex items-center gap-3 py-1">
+        <img src="assets/logo.png" alt="Placifly Logo" class="nav-logo-img">
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-1 lg:gap-2">
+        <button class="nav-link active" id="nav-btn-home" onclick="switchPlaciflyView('home')">Home</button>
+        <button class="nav-link" id="nav-btn-companies" onclick="scrollToSection('section-companies')">Choose Company</button>
+        <button class="nav-link" id="nav-btn-performance" onclick="scrollToSection('section-performance')">Performance</button>
+        <button class="nav-link" id="nav-btn-daily" onclick="scrollToSection('section-daily-challenge')">Daily Challenge</button>
+        <button class="nav-link" id="nav-btn-custom" onclick="openCustomCompanyModal()">
+          <span class="text-cyan-400 font-semibold">+ Custom Company</span>
+        </button>
+      </nav>
+
+      <!-- Auth Controls (Right) -->
+      <div class="flex items-center gap-3" id="nav-auth-container">
+        <!-- Unauthenticated state -->
+        <div id="nav-guest-btns" class="flex items-center gap-2">
+          <button class="text-sm font-semibold text-slate-300 hover:text-white px-3 py-1.5 rounded-lg transition-colors" onclick="openAuthModal('login')">
+            Log In
+          </button>
+          <button class="btn-placifly-primary text-sm py-2 px-5" onclick="openAuthModal('register')">
+            <span>Register</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </div>
+
+        <!-- Authenticated state -->
+        <div id="nav-user-btns" class="hidden flex items-center gap-3">
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-cyan-500/20">
+            <div class="w-7 h-7 rounded-full bg-cyan-500/20 text-cyan-400 font-bold text-xs flex items-center justify-center border border-cyan-500/40" id="user-avatar-initial">
+              U
+            </div>
+            <span class="text-xs font-semibold text-white max-w-[110px] truncate" id="nav-user-name">Candidate</span>
+          </div>
+
+          <button class="text-xs text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors" onclick="handleLogout()" title="Log Out">
+            🚪
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================================================== -->
+  <!-- 3. MAIN CONTENT CONTAINER                           -->
+  <!-- ==================================================== -->
+  <main class="flex-1 w-full relative z-10">
+
+    <!-- ================================================== -->
+    <!-- VIEW A: HOME & PLACEMENT DASHBOARD                 -->
+    <!-- ================================================== -->
+    <div id="view-home" class="placifly-main-view">
+      
+      <!-- HERO SECTION -->
+      <section class="hero-section">
+        <canvas id="hero-flight-canvas" class="flight-route-canvas"></canvas>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10 text-center pt-8 sm:pt-14 pb-12">
+          
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs sm:text-sm font-semibold mb-6 shadow-sm">
+            <span>✈️</span> AI-Powered Placement & Interview Preparation
+          </div>
+
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-tight max-w-4xl mx-auto">
+            Your Career. Your Journey. <span class="hero-glow-title">Your Placifly.</span>
+          </h1>
+
+          <p class="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto mb-4 leading-relaxed font-medium">
+            Practice smarter. Interview better. Reach your dream company.
+          </p>
+
+          <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Placifly uses AI-powered interviews to help you prepare for HR, technical, coding, case study, and logical reasoning rounds tailored to your real resume.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+            <button class="btn-placifly-primary text-base py-3.5 px-8 w-full sm:w-auto" onclick="startInterviewFlow()">
+              <span>Start Your Interview</span>
+              <span class="btn-arrow">→</span>
+            </button>
+            <button class="btn-placifly-secondary text-base py-3.5 px-8 w-full sm:w-auto" onclick="scrollToSection('section-companies')">
+              <span>Explore 26+ Companies</span>
+            </button>
+            <button class="btn-placifly-secondary text-base py-3.5 px-8 w-full sm:w-auto border-cyan-500/40 text-cyan-300 bg-cyan-950/20" onclick="openCustomCompanyModal()">
+              <span>+ Add Custom Company</span>
+            </button>
+          </div>
+
+          <!-- 5-ROUND INTERVIEW FLIGHT JOURNEY BAR -->
+          <div class="max-w-4xl mx-auto p-4 sm:p-5 rounded-2xl bg-slate-900/80 border border-cyan-500/20 backdrop-blur-xl">
+            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider text-left mb-3 flex items-center justify-between">
+              <span>✈️ The 5-Round Placifly Practice Flight Path</span>
+              <span class="text-cyan-400 font-normal">Score &ge; 70% to Qualify Each Round</span>
+            </div>
+            <div class="grid grid-cols-5 gap-2 text-center text-xs">
+              <div class="p-2.5 rounded-xl bg-[#030B1E] border border-cyan-500/20">
+                <span class="text-lg block mb-0.5">👔</span>
+                <span class="font-bold text-white block">Round 1</span>
+                <span class="text-[10px] text-cyan-300">HR Interview</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#030B1E] border border-cyan-500/20">
+                <span class="text-lg block mb-0.5">💻</span>
+                <span class="font-bold text-white block">Round 2</span>
+                <span class="text-[10px] text-cyan-300">Technical</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#030B1E] border border-cyan-500/20">
+                <span class="text-lg block mb-0.5">🧑‍💻</span>
+                <span class="font-bold text-white block">Round 3</span>
+                <span class="text-[10px] text-cyan-300">Live Coding</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#030B1E] border border-cyan-500/20">
+                <span class="text-lg block mb-0.5">📊</span>
+                <span class="font-bold text-white block">Round 4</span>
+                <span class="text-[10px] text-cyan-300">Case Study</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-[#030B1E] border border-cyan-500/20">
+                <span class="text-lg block mb-0.5">🧩</span>
+                <span class="font-bold text-white block">Round 5</span>
+                <span class="text-[10px] text-cyan-300">Logical Puzzle</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- CANDIDATE PERFORMANCE & DASHBOARD -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12" id="section-performance">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-white">Your Interview Performance</h2>
+            <p class="text-sm text-slate-400 mt-1">Real-time statistics calculated directly from your completed mock sessions.</p>
+          </div>
+          <span class="text-xs font-semibold text-cyan-400 bg-cyan-950/40 border border-cyan-500/30 px-3 py-1.5 rounded-full" id="readiness-benchmark-tag">
+            Placifly Practice Benchmark
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8">
+          <!-- Readiness Card -->
+          <div class="placifly-card p-6">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Practice Readiness</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-extrabold text-cyan-300" id="stat-readiness">78%</span>
+              <span class="text-xs font-medium text-emerald-400" id="stat-readiness-label">Good — Keep Practicing</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+              <div class="bg-gradient-to-r from-blue-500 to-cyan-400 h-full rounded-full" id="stat-readiness-bar" style="width: 78%;"></div>
+            </div>
+          </div>
+
+          <!-- Overall Score -->
+          <div class="placifly-card p-6">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Average Score</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-extrabold text-white" id="stat-avg-score">76</span>
+              <span class="text-xs text-slate-400">/ 100</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-3" id="stat-score-note">Across all completed interview rounds</p>
+          </div>
+
+          <!-- Sessions Completed -->
+          <div class="placifly-card p-6">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Interviews Completed</span>
+            <div class="flex items-baseline gap-2">
+              <span class="text-4xl font-extrabold text-white" id="stat-sessions-count">4</span>
+              <span class="text-xs text-slate-400">Sessions</span>
+            </div>
+            <p class="text-xs text-cyan-400 mt-3" id="stat-questions-count">24 questions answered</p>
+          </div>
+
+          <!-- Strongest & Weakest Area -->
+          <div class="placifly-card p-6">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Analysis Insight</span>
+            <div class="text-xs space-y-1.5 mt-1">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Strongest:</span>
+                <span class="font-bold text-emerald-400" id="stat-strongest">HR & Puzzles</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Focus Area:</span>
+                <span class="font-bold text-amber-400" id="stat-focus">Coding Edge Cases</span>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2.5" id="stat-improvement-note">Score improved by +12 pts over time</p>
+          </div>
+        </div>
+
+        <!-- Round Breakdown & Progress Graph Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          <!-- Round Performance Breakdown -->
+          <div class="placifly-card p-6">
+            <h3 class="text-base font-bold text-white mb-4 flex items-center justify-between">
+              <span>Round Score Breakdown</span>
+              <span class="text-xs text-slate-500 font-normal">Min 70 to Qualify</span>
+            </h3>
+            
+            <div class="space-y-3.5 text-xs">
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>👔 Round 1: HR Interview</span>
+                  <span class="font-bold text-cyan-300" id="score-hr">82 / 100</span>
+                </div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-cyan-400 h-full rounded-full" style="width: 82%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>💻 Round 2: Technical Fundamentals</span>
+                  <span class="font-bold text-cyan-300" id="score-tech">74 / 100</span>
+                </div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-blue-400 h-full rounded-full" style="width: 74%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>🧑‍💻 Round 3: Live Coding</span>
+                  <span class="font-bold text-cyan-300" id="score-code">68 / 100</span>
+                </div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-amber-400 h-full rounded-full" style="width: 68%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>📊 Round 4: Company Case Study</span>
+                  <span class="font-bold text-cyan-300" id="score-case">80 / 100</span>
+                </div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-purple-400 h-full rounded-full" style="width: 80%;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-slate-300 mb-1">
+                  <span>🧩 Round 5: Logical Puzzle</span>
+                  <span class="font-bold text-cyan-300" id="score-puzzle">85 / 100</span>
+                </div>
+                <div class="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div class="bg-emerald-400 h-full rounded-full" style="width: 85%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Progress Trend Chart -->
+          <div class="placifly-card p-6 lg:col-span-2">
+            <h3 class="text-base font-bold text-white mb-2">Performance Progress Over Time</h3>
+            <p class="text-xs text-slate-400 mb-4">Tracking your score growth across recent interview simulations.</p>
+            <div class="h-56 relative">
+              <canvas id="progress-trend-chart"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- CHOOSE YOUR COMPANY SECTION -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 py-14" id="section-companies">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+          <div>
+            <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+              PRACTICE PORTFOLIO
+            </span>
+            <h2 class="text-3xl font-extrabold text-white mt-3">Choose Your Target Company</h2>
+            <p class="text-sm text-slate-400 mt-1">Select from 26+ major enterprises or analyze any custom company URL.</p>
+          </div>
+
+          <!-- Company Search Box -->
+          <div class="w-full md:w-80 relative">
+            <input type="text" id="company-search-input" placeholder="Search your company (e.g. TCS, Google)..." class="auth-input pr-10 text-sm" oninput="handleCompanySearch(this.value)">
+            <span class="absolute right-3.5 top-3 text-slate-400 text-sm">🔍</span>
+          </div>
+        </div>
+
+        <div class="text-xs text-slate-500 italic mb-6">
+          * Note: Placifly provides independent practice simulations and is not officially affiliated with or endorsed by these companies.
+        </div>
+
+        <!-- 26+ Companies Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5" id="company-cards-grid">
+          <!-- Injected dynamically by JS -->
+        </div>
+
+        <!-- CUSTOM COMPANY BANNER CARD -->
+        <div class="mt-8 placifly-card p-8 bg-gradient-to-r from-[#0A1128] via-[#0D1B3E] to-[#0A1128] border-cyan-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="max-w-xl">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold mb-3">
+              <span>✨</span> CUSTOM COMPANY INTERVIEW
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">Your Company Isn't Listed?</h3>
+            <p class="text-sm text-slate-300 leading-relaxed">
+              Add any startup or company website URL. Placifly's AI will analyze their public tech stack, products, and culture to generate a custom interview experience for you.
+            </p>
+          </div>
+          <button class="btn-placifly-primary whitespace-nowrap py-3.5 px-8" onclick="openCustomCompanyModal()">
+            <span>Add Custom Company +</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- DAILY INTERVIEW CHALLENGE -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12" id="section-daily-challenge">
+        <div class="placifly-card p-8 border-cyan-500/30">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <div>
+              <span class="text-xs font-bold text-amber-400 uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                DAILY PRACTICE HABIT
+              </span>
+              <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">Daily Interview Challenge</h2>
+              <p class="text-sm text-slate-400">4 focused questions every day to build consistent interview reflexes.</p>
+            </div>
+            <button class="btn-placifly-primary py-2.5 px-6 text-sm" onclick="startDailyChallenge()">
+              <span>Launch Daily Challenge →</span>
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
+            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
+              <span class="font-bold text-cyan-300 block mb-1">👔 1 HR Question</span>
+              <p class="text-slate-400">"Describe a project challenge where requirements changed midway."</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
+              <span class="font-bold text-blue-300 block mb-1">💻 1 Technical Question</span>
+              <p class="text-slate-400">"Explain indexing in relational databases and when it hurts performance."</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
+              <span class="font-bold text-amber-300 block mb-1">🧑‍💻 1 Coding Task</span>
+              <p class="text-slate-400">"Implement an algorithm to reverse words in a string in O(1) space."</p>
+            </div>
+            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
+              <span class="font-bold text-emerald-300 block mb-1">🧩 1 Logic Puzzle</span>
+              <p class="text-slate-400">"The 3-switch and closed door light bulb puzzle."</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INTERNATIONAL CAREER VISION -->
+      <section class="max-w-7xl mx-auto px-4 sm:px-6 py-16 border-t border-cyan-500/10 text-center">
+        <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
+          GLOBAL PERSPECTIVE
+        </span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-3 mb-3">Your Opportunity Has No Borders.</h2>
+        <p class="text-base text-slate-300 max-w-2xl mx-auto leading-relaxed mb-8">
+          The airplane in Placifly symbolizes your career journey moving forward—helping you build the confidence, technical depth, and communication skills to reach top engineering teams anywhere in the world.
+        </p>
+        <div class="flex items-center justify-center gap-6 text-slate-400 text-xs font-semibold">
+          <span class="flex items-center gap-1.5">✓ Structured Practice</span>
+          <span class="flex items-center gap-1.5">✓ Resume Grounding</span>
+          <span class="flex items-center gap-1.5">✓ Real AI Feedback</span>
+          <span class="flex items-center gap-1.5">✓ Zero Judgment</span>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ================================================== -->
+    <!-- VIEW B: 5-ROUND INTERVIEW WORKSTATION & SIMULATOR  -->
+    <!-- ================================================== -->
+    <div id="view-simulator" class="placifly-main-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      
+      <!-- Top Control Bar -->
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-cyan-500/15">
+        <button class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cyan-300 transition-colors" onclick="switchPlaciflyView('home')">
+          <span>←</span> Back to Dashboard
+        </button>
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20" id="sim-top-status-badge">
+            AI INTERVIEW WORKSTATION
+          </span>
+        </div>
+      </div>
+
+      <!-- Simulator Dynamic Mounting Container -->
+      <div id="simulator-content"></div>
+      <div id="feedback-area" class="hidden mt-6"></div>
+      <div id="report-content" class="mt-6"></div>
+    </div>
+
+  </main>
+
+  <!-- ==================================================== -->
+  <!-- 4. CUSTOM COMPANY MODAL                             -->
+  <!-- ==================================================== -->
+  <div id="custom-company-modal" class="auth-modal-overlay hidden" onclick="if(event.target===this) closeCustomCompanyModal()">
+    <div class="auth-card max-w-xl p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">AI COMPANY INTELLIGENCE</span>
+          <h3 class="text-xl font-bold text-white mt-1">Prepare for Any Company</h3>
+        </div>
+        <button class="text-slate-400 hover:text-white" onclick="closeCustomCompanyModal()">✕</button>
+      </div>
+
+      <p class="text-xs text-slate-300 mb-4 leading-relaxed">
+        Paste a company website URL or domain name. Placifly's AI will analyze public data to construct a tailored 5-round interview blueprint.
+      </p>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Company Website URL</label>
+          <input type="text" id="custom-company-url-input" placeholder="https://example-company.com" class="auth-input text-sm" onkeydown="if(event.key==='Enter') executeCompanyUrlAnalysis()">
+        </div>
+
+        <button class="btn-placifly-primary w-full py-3 text-sm" onclick="executeCompanyUrlAnalysis()" id="btn-analyze-company">
+          <span>Analyze Company & Start →</span>
+        </button>
+
+        <!-- Dynamic Company Analysis Result Box -->
+        <div id="custom-company-analysis-box" class="hidden p-4 rounded-xl bg-[#030B1E] border border-cyan-500/30 text-xs space-y-2 mt-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
+            <h4 class="font-bold text-white text-sm" id="analyzed-comp-name">Company Name</h4>
+            <span class="text-cyan-300 font-semibold" id="analyzed-comp-industry">Industry</span>
+          </div>
+          <p class="text-slate-300" id="analyzed-comp-culture"></p>
+          <div class="pt-2">
+            <span class="font-bold text-slate-400 block mb-1">Recommended Preparation Focus:</span>
+            <div id="analyzed-comp-prep-areas" class="flex flex-wrap gap-1 text-[10px]"></div>
+          </div>
+          <div class="pt-3 flex justify-end">
+            <button class="btn-placifly-primary py-2 px-5 text-xs" onclick="launchCustomCompanyInterview()">
+              Start Custom Interview →
+            </button>
+          </div>
+        </div>
+
+        <p class="text-[10px] text-slate-500 text-center italic">
+          * AI-generated practice recommendations based on publicly available domain info.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================================================== -->
+  <!-- 5. AUTHENTICATION MODAL (LOGIN / REGISTER / OTP)    -->
+  <!-- ==================================================== -->
+  <div id="auth-modal" class="auth-modal-overlay hidden" onclick="if(event.target===this) closeAuthModal()">
+    <div class="auth-card p-6 sm:p-8">
+      
+      <!-- Close button -->
+      <button class="absolute top-5 right-5 text-slate-400 hover:text-white" onclick="closeAuthModal()">✕</button>
+
+      <!-- Logo in Modal -->
+      <div class="text-center mb-6">
+        <img src="assets/logo.png" alt="Placifly Logo" class="h-10 mx-auto mb-2 drop-shadow-[0_2px_10px_rgba(0,210,255,0.4)]">
+        <p class="text-xs text-cyan-400 font-bold tracking-widest uppercase">Your Career. Your Journey. Your Placifly.</p>
+      </div>
+
+      <!-- Tab Buttons (Login vs Register) -->
+      <div class="flex items-center rounded-xl bg-[#030B1E] p-1 border border-cyan-500/20 mb-6" id="auth-tab-switchers">
+        <button id="auth-tab-login" class="flex-1 py-2 rounded-lg text-sm font-bold text-cyan-300 bg-cyan-500/20 transition-all" onclick="setAuthTab('login')">
+          Log In
+        </button>
+        <button id="auth-tab-register" class="flex-1 py-2 rounded-lg text-sm font-bold text-slate-400 transition-all" onclick="setAuthTab('register')">
+          Create Account
+        </button>
+      </div>
+
+      <!-- PANEL 1: LOGIN -->
+      <div id="panel-login" class="auth-panel space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Email Address</label>
+          <input type="email" id="login-email" placeholder="name@domain.com" class="auth-input" onkeydown="if(event.key==='Enter') handleLoginSubmit()">
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="block text-xs font-semibold text-slate-300">Password</label>
+            <button type="button" class="text-xs text-cyan-400 hover:underline" onclick="setAuthTab('forgot')">Forgot?</button>
+          </div>
+          <input type="password" id="login-password" placeholder="••••••••" class="auth-input" onkeydown="if(event.key==='Enter') handleLoginSubmit()">
+        </div>
+
+        <p id="login-error" class="text-xs text-rose-400 hidden"></p>
+
+        <button class="btn-placifly-primary w-full py-3 mt-2" onclick="handleLoginSubmit()" id="btn-login-submit">
+          Log In →
+        </button>
+
+        <p class="text-center text-xs text-slate-500 pt-2">
+          New to Placifly? <button class="text-cyan-400 hover:underline font-semibold" onclick="setAuthTab('register')">Create an account</button>
+        </p>
+      </div>
+
+      <!-- PANEL 2: REGISTER -->
+      <div id="panel-register" class="auth-panel space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Full Name</label>
+          <input type="text" id="reg-name" placeholder="Bhoi Kartik" class="auth-input">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Email Address</label>
+          <input type="email" id="reg-email" placeholder="your.email@example.com" class="auth-input">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Password (min 6 characters)</label>
+          <input type="password" id="reg-password" placeholder="••••••••" class="auth-input">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Confirm Password</label>
+          <input type="password" id="reg-password-confirm" placeholder="••••••••" class="auth-input" onkeydown="if(event.key==='Enter') handleRegisterSubmit()">
+        </div>
+
+        <p id="reg-error" class="text-xs text-rose-400 hidden"></p>
+
+        <button class="btn-placifly-primary w-full py-3 mt-2" onclick="handleRegisterSubmit()" id="btn-reg-submit">
+          Continue & Verify Email →
+        </button>
+      </div>
+
+      <!-- PANEL 3: EMAIL OTP VERIFICATION -->
+      <div id="panel-verify" class="auth-panel space-y-4 hidden text-center">
+        <div class="w-12 h-12 rounded-full bg-cyan-500/20 text-cyan-300 text-2xl flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+          ✉️
+        </div>
+        <h3 class="text-lg font-bold text-white">Verify Your Email</h3>
+        <p class="text-xs text-slate-300">We sent a 6-digit verification code to <br><strong id="verify-email-target" class="text-cyan-300"></strong></p>
+
+        <!-- Dev Mode One-Click Autofill Banner -->
+        <div id="modal-dev-otp-banner" class="hidden p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs text-cyan-300 cursor-pointer hover:bg-cyan-900/30 transition-colors" onclick="autofillModalDevOTP()">
+          🔑 Dev Mode Code: <strong id="modal-dev-otp-code" class="text-white font-mono tracking-wider">123456</strong> (Click to Auto-Fill)
+        </div>
+
+        <div class="flex justify-center gap-2 py-2" id="modal-otp-inputs">
+          <input type="text" maxlength="1" class="otp-box" data-idx="0" oninput="handleModalOTPInput(this, 0)" onkeydown="handleModalOTPKeydown(event, 0)">
+          <input type="text" maxlength="1" class="otp-box" data-idx="1" oninput="handleModalOTPInput(this, 1)" onkeydown="handleModalOTPKeydown(event, 1)">
+          <input type="text" maxlength="1" class="otp-box" data-idx="2" oninput="handleModalOTPInput(this, 2)" onkeydown="handleModalOTPKeydown(event, 2)">
+          <input type="text" maxlength="1" class="otp-box" data-idx="3" oninput="handleModalOTPInput(this, 3)" onkeydown="handleModalOTPKeydown(event, 3)">
+          <input type="text" maxlength="1" class="otp-box" data-idx="4" oninput="handleModalOTPInput(this, 4)" onkeydown="handleModalOTPKeydown(event, 4)">
+          <input type="text" maxlength="1" class="otp-box" data-idx="5" oninput="handleModalOTPInput(this, 5)" onkeydown="handleModalOTPKeydown(event, 5)">
+        </div>
+
+        <p id="verify-error" class="text-xs text-rose-400 hidden"></p>
+
+        <button class="btn-placifly-primary w-full py-3" onclick="handleVerifyOTPSubmit()" id="btn-verify-submit" disabled>
+          Verify & Enter Placifly
+        </button>
+
+        <button class="text-xs text-slate-400 hover:text-cyan-300 block w-full mt-2" onclick="handleResendOTP()" id="btn-resend-otp" disabled>
+          Resend Code (<span id="resend-countdown">30</span>s)
+        </button>
+      </div>
+
+      <!-- PANEL 4: FORGOT PASSWORD -->
+      <div id="panel-forgot" class="auth-panel space-y-4 hidden">
+        <h3 class="text-base font-bold text-white mb-1">Reset Password</h3>
+        <p class="text-xs text-slate-400">Enter your email to receive a password reset verification code.</p>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Your Account Email</label>
+          <input type="email" id="forgot-email" placeholder="name@domain.com" class="auth-input">
+        </div>
+
+        <button class="btn-placifly-primary w-full py-3" onclick="handleForgotSubmit()">
+          Send Reset Code
+        </button>
+
+        <button class="text-xs text-slate-400 hover:text-white block w-full text-center" onclick="setAuthTab('login')">
+          ← Back to Login
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ==================================================== -->
+  <!-- 6. FOOTER                                            -->
+  <!-- ==================================================== -->
+  <footer class="border-t border-cyan-500/10 bg-[#030B1E] py-10 mt-auto relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <img src="assets/logo.png" alt="Placifly Logo" class="h-8 drop-shadow-[0_2px_8px_rgba(0,210,255,0.3)]">
+        <span class="text-xs text-slate-500">| AI-Powered Placement & Interview Preparation Platform</span>
+      </div>
+      <p class="text-xs text-slate-500">&copy; 2026 Placifly. All rights reserved. "Your Career. Your Journey. Your Placifly."</p>
+    </div>
+  </footer>
+
+  <!-- ==================================================== -->
+  <!-- 7. SCRIPTS                                           -->
+  <!-- ==================================================== -->
+  <script src="js/simulator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

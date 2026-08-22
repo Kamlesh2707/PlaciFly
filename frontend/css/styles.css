@@ -1,0 +1,568 @@
+/* ==============================================================================
+   PLACIFLY — DESIGN SYSTEM & STYLESHEET
+   Brand Colors & Visual Identity Inspired by Placifly Official Logo:
+   - Deep Navy Blue: #030B1E, #0A1128, #0D1B3E
+   - Royal / Electric Blue: #0052FF, #0066FF
+   - Cyan / Sky Blue: #00D2FF, #00F0FF
+   - Pure White / Crisp Slate Text: #FFFFFF, #F1F5F9, #94A3B8
+   ============================================================================== */
+
+:root {
+  --navy-deep: #030B1E;
+  --navy-dark: #0A1128;
+  --navy-card: #0E1838;
+  --navy-card-hover: #14224D;
+  --navy-border: rgba(0, 210, 255, 0.16);
+  --navy-border-hover: rgba(0, 210, 255, 0.45);
+  
+  --blue-royal: #0052FF;
+  --blue-electric: #0066FF;
+  --cyan-accent: #00D2FF;
+  --cyan-bright: #00F0FF;
+  --cyan-glow: rgba(0, 210, 255, 0.25);
+  
+  --emerald: #10B981;
+  --amber: #F59E0B;
+  --rose: #EF4444;
+  
+  --text-primary: #FFFFFF;
+  --text-secondary: #E2E8F0;
+  --text-muted: #94A3B8;
+  
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  
+  --shadow-card: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 1px 1px rgba(0, 210, 255, 0.1);
+  --shadow-glow: 0 0 30px rgba(0, 210, 255, 0.22);
+  --shadow-glow-strong: 0 0 45px rgba(0, 210, 255, 0.4);
+  
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--navy-deep);
+  color: var(--text-primary);
+  font-family: var(--font-main);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Ambient Radial Glows */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% 15%, rgba(0, 82, 255, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 75%, rgba(0, 210, 255, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(3, 11, 30, 0.7) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ==============================================================================
+   1. INTRO SPLASH & AIRPLANE FLIGHT ANIMATION
+   ============================================================================== */
+
+#intro-splash {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, #0A1128 0%, #030B1E 100%);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.8s;
+  overflow: hidden;
+}
+
+#intro-splash.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.intro-flight-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.intro-content-wrapper {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 600px;
+  padding: 24px;
+}
+
+.intro-logo-box {
+  opacity: 0;
+  transform: scale(0.85) translateY(20px);
+  animation: logoReveal 1s cubic-bezier(0.16, 1, 0.3, 1) 1.8s forwards;
+}
+
+.intro-logo-img {
+  max-width: 360px;
+  width: 75vw;
+  height: auto;
+  filter: drop-shadow(0 0 30px rgba(0, 210, 255, 0.5));
+}
+
+.intro-tagline {
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--cyan-bright);
+  margin-top: 18px;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: elementFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2.4s forwards;
+  text-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
+}
+
+.intro-desc {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: elementFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 2.7s forwards;
+}
+
+.intro-btn-wrap {
+  margin-top: 32px;
+  opacity: 0;
+  transform: translateY(15px);
+  animation: elementFadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 3s forwards;
+}
+
+@keyframes logoReveal {
+  0% { opacity: 0; transform: scale(0.85) translateY(20px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes elementFadeUp {
+  0% { opacity: 0; transform: translateY(15px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* ==============================================================================
+   2. BUTTONS & UI CONTROLS
+   ============================================================================== */
+
+.btn-placifly-primary {
+  background: linear-gradient(135deg, var(--blue-electric), var(--cyan-accent));
+  color: #030B1E;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 13px 32px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 210, 255, 0.3);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.btn-placifly-primary:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 30px rgba(0, 210, 255, 0.5);
+  background: linear-gradient(135deg, #0070FF, #00F0FF);
+}
+
+.btn-placifly-primary:hover .btn-arrow {
+  transform: translateX(4px);
+}
+
+.btn-arrow {
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+.btn-placifly-secondary {
+  background: rgba(10, 17, 40, 0.8);
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  padding: 12px 28px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--navy-border);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  text-decoration: none;
+}
+
+.btn-placifly-secondary:hover {
+  background: rgba(14, 24, 56, 0.95);
+  border-color: var(--cyan-accent);
+  color: var(--cyan-bright);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 210, 255, 0.15);
+}
+
+/* ==============================================================================
+   3. GLASS & METALLIC CARDS
+   ============================================================================== */
+
+.placifly-card {
+  background: var(--navy-card);
+  border: 1px solid var(--navy-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.placifly-card:hover {
+  border-color: var(--navy-border-hover);
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-glow), 0 20px 40px -15px rgba(0,0,0,0.6);
+  background: var(--navy-card-hover);
+}
+
+.placifly-card-interactive {
+  cursor: pointer;
+}
+
+/* ==============================================================================
+   4. NAVIGATION BAR
+   ============================================================================== */
+
+.placifly-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(3, 11, 30, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(0, 210, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.placifly-navbar.scrolled {
+  background: rgba(3, 11, 30, 0.96);
+  border-bottom-color: rgba(0, 210, 255, 0.25);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.nav-logo-img {
+  height: 38px;
+  max-height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 10px rgba(0, 210, 255, 0.3));
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.nav-logo-img:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 3px 15px rgba(0, 210, 255, 0.55));
+}
+
+.nav-link {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--cyan-bright);
+  background: rgba(0, 210, 255, 0.08);
+}
+
+/* ==============================================================================
+   5. HERO & DISCOVERY CANVAS
+   ============================================================================== */
+
+.hero-section {
+  position: relative;
+  padding: 60px 0 90px;
+  overflow: hidden;
+}
+
+.hero-glow-title {
+  background: linear-gradient(135deg, #FFFFFF 30%, #00D2FF 80%, #0052FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.flight-route-canvas {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.45;
+}
+
+/* ==============================================================================
+   6. SMART SEARCH BAR
+   ============================================================================== */
+
+.smart-search-box {
+  background: rgba(10, 17, 40, 0.95);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 210, 255, 0.15);
+  backdrop-filter: blur(20px);
+}
+
+.search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.search-input::placeholder {
+  color: #64748B;
+}
+
+.search-chip {
+  padding: 7px 16px;
+  border-radius: 9999px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  background: rgba(14, 24, 56, 0.8);
+  border: 1px solid rgba(0, 210, 255, 0.15);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.search-chip:hover, .search-chip.active {
+  background: rgba(0, 210, 255, 0.15);
+  border-color: var(--cyan-accent);
+  color: var(--cyan-bright);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.2);
+}
+
+/* ==============================================================================
+   7. PLACE CARDS & BADGES
+   ============================================================================== */
+
+.place-card-img-wrap {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
+}
+
+.place-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.placifly-card:hover .place-card-img {
+  transform: scale(1.08);
+}
+
+.place-badge {
+  position: absolute;
+  top: 14px; left: 14px;
+  background: rgba(3, 11, 30, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  color: var(--cyan-bright);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 9999px;
+}
+
+.place-fav-btn {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(3, 11, 30, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.place-fav-btn:hover, .place-fav-btn.active {
+  color: #EF4444;
+  border-color: rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.15);
+  transform: scale(1.1);
+}
+
+/* ==============================================================================
+   8. AUTH MODALS & VERIFICATION SCREENS
+   ============================================================================== */
+
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 11, 30, 0.85);
+  backdrop-filter: blur(16px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.auth-card {
+  background: #0A1128;
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(0, 210, 255, 0.2);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+  position: relative;
+}
+
+.auth-input {
+  width: 100%;
+  background: #030B1E;
+  border: 1px solid rgba(0, 210, 255, 0.2);
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.auth-input:focus {
+  border-color: var(--cyan-accent);
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.25);
+}
+
+.otp-box {
+  width: 48px;
+  height: 56px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  background: #030B1E;
+  border: 2px solid rgba(0, 210, 255, 0.3);
+  border-radius: var(--radius-md);
+  color: var(--cyan-bright);
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.otp-box:focus {
+  border-color: var(--cyan-bright);
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+}
+
+/* ==============================================================================
+   9. TOAST & NOTIFICATIONS
+   ============================================================================== */
+
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  pointer-events: auto;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toastSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.toast-success {
+  background: #064E3B;
+  border: 1px solid #10B981;
+}
+
+.toast-error {
+  background: #7F1D1D;
+  border: 1px solid #EF4444;
+}
+
+.toast-info {
+  background: #0A1128;
+  border: 1px solid var(--cyan-accent);
+}
+
+@keyframes toastSlide {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ==============================================================================
+   10. SCROLLBAR
+   ============================================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--navy-deep);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 4px;
+  border: 2px solid var(--navy-deep);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-accent);
+}

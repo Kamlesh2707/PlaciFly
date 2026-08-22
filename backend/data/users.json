@@ -1,0 +1,26 @@
+{
+  "kartik.test@placifly.com": {
+    "email": "kartik.test@placifly.com",
+    "name": "Bhoi Kartik",
+    "password_hash": "3c230d9acf705af8:e13806aa8c54ae989210f754ff1fbf7102d9c6b78dd511dca5c417b6721046fa",
+    "verified": true,
+    "created_at": 1787322274.8585331,
+    "favorites": []
+  },
+  "kartik_1787322413@placifly.com": {
+    "email": "kartik_1787322413@placifly.com",
+    "name": "Bhoi Kartik",
+    "password_hash": "6f18ef8df80eab4c:49d9180d1236e3117aeb4f967de2d449c83ca11a4080df894de5f231e4e6d189",
+    "verified": true,
+    "created_at": 1787322413.629187,
+    "favorites": []
+  },
+  "bhoik38108@gmail.com": {
+    "email": "bhoik38108@gmail.com",
+    "name": "Bhoi Kamlesh",
+    "password_hash": "22e8d8cb7ab1314b:cd54e2265aca9fc5962ca92c332b4a86bdcb77335319aeccbbc85f3833de89b6",
+    "verified": true,
+    "created_at": 1787322626.2116168,
+    "favorites": []
+  }
+}
