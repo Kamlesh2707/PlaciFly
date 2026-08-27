@@ -130,7 +130,6 @@ function renderCompanySelection() {
     </div>
   `).join('');
 
-  // Custom Company Card at the end
   cardsHtml += `
     <div class="glass-card interactive p-6 cursor-pointer hover:border-cyan-400 transition-all text-center flex flex-col items-center justify-center gap-3 border-dashed border-2 border-slate-600 bg-slate-900/30 group" 
          onclick="simSelectCustomCompany()" style="min-height: 180px;">
@@ -143,6 +142,20 @@ function renderCompanySelection() {
       </div>
       <span class="text-[10px] px-2.5 py-1 rounded-full bg-cyan-950/40 text-cyan-300 border border-cyan-500/20 font-medium">
         Tailored 5 Rounds
+      </span>
+    </div>
+
+    <div class="glass-card interactive p-6 cursor-pointer hover:border-amber-400 transition-all text-center flex flex-col items-center justify-center gap-3 border-dashed border-2 border-amber-600/50 bg-amber-900/10 group" 
+         onclick="launchStructuredInterview('normal')" style="min-height: 180px;">
+      <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-2xl text-amber-400 border border-amber-500/30 group-hover:scale-110 transition-transform">
+        📝
+      </div>
+      <div>
+        <h3 class="font-bold text-base text-amber-400">Structured Mode</h3>
+        <p class="text-[11px] text-slate-500 mt-0.5">New comprehensive format</p>
+      </div>
+      <span class="text-[10px] px-2.5 py-1 rounded-full bg-amber-950/40 text-amber-300 border border-amber-500/20 font-medium">
+        6 Phases
       </span>
     </div>
   `;
@@ -443,6 +456,15 @@ async function processResume() {
 
     if (typeof showToast === 'function') {
       showToast('Resume analyzed! Starting Round 1: HR Interview...', 'success');
+    }
+
+    if (window.useStructuredFlow) {
+        structuredSession.candidateProfile = sessionState.candidateProfile;
+        structuredSession.companyProfile = { name: sessionState.company };
+        structuredSession.difficulty = sessionState.difficulty;
+        structuredSession.interviewType = 'normal';
+        launchStructuredInterview('normal_continue');
+        return;
     }
 
     // Reset session rounds
@@ -1405,3 +1427,500 @@ window.start5RoundMockDrive = start5RoundMockDrive;
 window.submitDriveRoundAnswer = submitDriveRoundAnswer;
 window.advanceDriveRound = advanceDriveRound;
 window.renderFinalPlacementOffer = renderFinalPlacementOffer;
+
+/* ================================================
+   STRUCTURED INTERVIEW MODE
+   ================================================ */
+
+let structuredSession = {
+    sessionId: null,
+    interviewType: 'normal',
+    companyProfile: null,
+    candidateProfile: null,
+    resumeSummary: null,
+    difficulty: 'Medium',
+    interviewer: null,
+    currentPhaseIndex: 0,
+    phases: [
+        { id: 'introduction', name: 'Introduction', icon: '👋', questions: [], maxQuestions: 2 },
+        { id: 'company_knowledge', name: 'Company Knowledge', icon: '🏢', questions: [], maxQuestions: 3 },
+        { id: 'resume_based', name: 'Resume-Based', icon: '📄', questions: [], maxQuestions: 4 },
+        { id: 'role_requirements', name: 'Role & Company Fit', icon: '🎯', questions: [], maxQuestions: 3 },
+        { id: 'common_interview', name: 'Common Interview', icon: '💼', questions: [], maxQuestions: 3 },
+        { id: 'technical_scenario', name: 'Technical & Scenario', icon: '💻', questions: [], maxQuestions: 3 },
+    ],
+    currentQuestion: null,
+    isFollowupTurn: false,
+    allQAPairs: [],
+    previousQuestions: [],
+    timerInterval: null,
+    timerSeconds: 300
+};
+
+function launchStructuredInterview(interviewType) {
+    if (typeof switchPlaciflyView === 'function') switchPlaciflyView('simulator');
+    
+    if (interviewType === 'custom_company') {
+        structuredSession.interviewType = 'custom_company';
+        structuredSession.companyProfile = window.customCompanyProfile;
+        structuredSession.candidateProfile = window.customCandidateProfile;
+        structuredSession.resumeSummary = window.customResumeSummary;
+        renderStructuredResumeSummary();
+    } else if (interviewType === 'normal') {
+        window.useStructuredFlow = true;
+        if (typeof renderCompanySelection === 'function') renderCompanySelection();
+    } else if (interviewType === 'normal_continue') {
+        renderStructuredResumeSummary();
+    }
+}
+
+function renderStructuredResumeSummary() {
+    const container = document.getElementById('simulator-content');
+    if (!container) return;
+    
+    const c = structuredSession.candidateProfile || {};
+    const name = c.name || 'Candidate';
+    const lvl = c.experience_level || 'Experienced';
+    const edu = c.education || 'N/A';
+    const skills = c.skills || [];
+    const projs = c.projects || [];
+    const certs = c.certifications || [];
+    const strengths = structuredSession.resumeSummary?.key_strengths || [];
+
+    container.innerHTML = `
+      <div class="max-w-4xl mx-auto p-4 sm:p-8 animation-fade-in">
+        <div class="resume-summary-card p-6 sm:p-8 rounded-2xl bg-slate-900 border border-slate-700 shadow-xl">
+          <div class="resume-summary-header flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
+            <div>
+              <h2 class="text-2xl font-bold text-white flex items-center gap-2">✅ Resume Analysis Complete</h2>
+              <p class="text-sm text-slate-400 mt-1"><span class="resume-summary-name font-semibold text-cyan-400">${name}</span> • <span class="resume-summary-level text-amber-400">${lvl}</span></p>
+            </div>
+          </div>
+          
+          <div class="resume-summary-grid grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="resume-summary-section">
+              <h3 class="resume-summary-section-title text-sm font-bold text-slate-300 mb-2">Education</h3>
+              <p class="resume-summary-section-content text-sm text-slate-400">${edu}</p>
+            </div>
+            <div class="resume-summary-section">
+              <h3 class="resume-summary-section-title text-sm font-bold text-slate-300 mb-2">Technical Skills</h3>
+              <div class="flex flex-wrap gap-2 resume-summary-section-content">
+                ${skills.map(s => `<span class="px-2 py-1 rounded-full bg-slate-800 text-xs text-cyan-300 border border-slate-700">${s}</span>`).join('')}
+              </div>
+            </div>
+            <div class="resume-summary-section">
+              <h3 class="resume-summary-section-title text-sm font-bold text-slate-300 mb-2">Projects</h3>
+              <ul class="resume-summary-section-content text-sm text-slate-400 list-disc list-inside">
+                ${projs.map(p => `<li>${typeof p === 'object' ? p.name : p}</li>`).join('')}
+              </ul>
+            </div>
+            ${certs.length ? `
+            <div class="resume-summary-section">
+              <h3 class="resume-summary-section-title text-sm font-bold text-slate-300 mb-2">Certifications</h3>
+              <ul class="resume-summary-section-content text-sm text-slate-400 list-disc list-inside">
+                ${certs.map(c => `<li>${c}</li>`).join('')}
+              </ul>
+            </div>
+            ` : ''}
+            ${strengths.length ? `
+            <div class="resume-summary-section md:col-span-2">
+              <h3 class="resume-summary-section-title text-sm font-bold text-slate-300 mb-2">Key Strengths</h3>
+              <ul class="resume-summary-section-content text-sm text-emerald-400 list-disc list-inside">
+                ${strengths.map(s => `<li>${s}</li>`).join('')}
+              </ul>
+            </div>
+            ` : ''}
+          </div>
+          
+          <div class="text-right">
+            <button class="btn-primary py-3 px-8 text-sm font-bold" onclick="startStructuredInterviewSession()">Start Interview 🚀</button>
+          </div>
+        </div>
+      </div>
+    `;
+}
+
+async function startStructuredInterviewSession() {
+    try {
+        const res = await fetch('/api/interview/structured/start', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                company_profile: structuredSession.companyProfile,
+                candidate_profile: structuredSession.candidateProfile,
+                interview_type: structuredSession.interviewType,
+                difficulty: structuredSession.difficulty
+            })
+        });
+        
+        if (!res.ok) throw new Error('Failed to start structured session');
+        
+        const data = await res.json();
+        structuredSession.sessionId = data.session_id;
+        structuredSession.interviewer = data.interviewer;
+        structuredSession.currentQuestion = data.question;
+        
+        structuredSession.currentPhaseIndex = 0;
+        structuredSession.phases.forEach(p => p.questions = []);
+        structuredSession.allQAPairs = [];
+        structuredSession.previousQuestions = [data.question.question];
+        structuredSession.isFollowupTurn = false;
+        
+        renderStructuredWorkstation();
+    } catch (err) {
+        console.error(err);
+        if (typeof showToast === 'function') showToast('Failed to start interview', 'error');
+    }
+}
+
+function renderStructuredWorkstation() {
+    const container = document.getElementById('simulator-content');
+    if (!container) return;
+    
+    if (structuredSession.timerInterval) {
+        clearInterval(structuredSession.timerInterval);
+        structuredSession.timerInterval = null;
+    }
+    
+    const phase = structuredSession.phases[structuredSession.currentPhaseIndex];
+    const q = structuredSession.currentQuestion;
+    const interviewer = structuredSession.interviewer || { name: 'AI Panel', title: 'Interviewer', avatar: '🤖' };
+    
+    // Progress Bar
+    const progressHtml = structuredSession.phases.map((p, i) => {
+        let cls = 'text-slate-500 bg-slate-800 border-slate-700';
+        if (i < structuredSession.currentPhaseIndex) cls = 'text-emerald-400 bg-emerald-950/30 border-emerald-500/50';
+        else if (i === structuredSession.currentPhaseIndex) cls = 'text-cyan-300 bg-cyan-950/50 border-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.3)]';
+        
+        return `
+          <div class="phase-step flex items-center gap-2 px-3 py-2 rounded-lg border ${cls} text-xs font-bold transition-all">
+            <span class="phase-step-icon">${p.icon}</span>
+            <span class="hidden sm:inline">${p.name}</span>
+          </div>
+        `;
+    }).join('<div class="phase-connector h-[2px] w-4 sm:w-8 bg-slate-700"></div>');
+    
+    container.innerHTML = `
+      <div class="max-w-5xl mx-auto p-4 sm:p-8 animation-fade-in">
+        <div class="phase-progress-bar flex items-center justify-center gap-1 sm:gap-2 mb-8 overflow-x-auto pb-2 scrollbar-hide">
+          ${progressHtml}
+        </div>
+        
+        <div class="structured-question-card glass-card p-6 sm:p-8 border-t-4 border-cyan-500 relative">
+          <div class="flex items-center gap-4 mb-6 pb-6 border-b border-slate-800">
+            <div class="w-14 h-14 rounded-full bg-slate-800 flex items-center justify-center text-3xl border border-slate-700">
+              ${interviewer.avatar}
+            </div>
+            <div>
+              <h3 class="font-bold text-lg text-white">${interviewer.name}</h3>
+              <p class="text-sm text-slate-400">${interviewer.title} • ${phase.name}</p>
+            </div>
+          </div>
+          
+          <div class="mb-4 flex items-center gap-2">
+            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-slate-800 text-cyan-300 border border-slate-700">${phase.icon} ${phase.name}</span>
+            ${structuredSession.isFollowupTurn ? `<span class="followup-badge px-3 py-1 rounded-full text-xs font-bold uppercase bg-amber-500/15 text-amber-400 border border-amber-500/30">⚡ Follow-Up Question</span>` : ''}
+          </div>
+          
+          <div class="p-5 rounded-xl border border-cyan-500/20 text-white font-medium text-lg leading-relaxed shadow-inner" style="background: rgba(6,182,212,0.05);">
+            <div class="structured-question-text">${q.question}</div>
+            ${q.context ? `<div class="text-sm text-slate-400 mt-3 border-t border-slate-700/50 pt-3">${q.context}</div>` : ''}
+          </div>
+          
+          <div class="mt-6">
+            <div class="flex items-center justify-between mb-2">
+              <label class="font-bold text-slate-200 text-sm">Your Response</label>
+              <div class="text-xs text-slate-400" id="structured-timer">05:00</div>
+            </div>
+            <textarea id="structured-answer-input" class="structured-answer-area w-full h-40 bg-slate-900 border border-slate-700 rounded-xl p-4 text-slate-200 focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 outline-none resize-y mb-3" placeholder="Structure your answer using the STAR method if applicable..."></textarea>
+            
+            <div class="flex justify-between items-center">
+              <span id="structured-word-count" class="text-slate-500 text-xs tabular-nums">0 words (min 20)</span>
+              <button class="btn-primary px-6 py-2 text-sm font-bold flex items-center gap-2" id="btn-submit-structured" onclick="submitStructuredAnswer()">
+                <span>Submit Answer</span>
+                <span>→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    const textarea = document.getElementById('structured-answer-input');
+    if (textarea) {
+        const updateCount = () => {
+            const val = textarea.value.trim();
+            const words = val ? val.split(/\\s+/).filter(w => w.length > 0).length : 0;
+            const el = document.getElementById('structured-word-count');
+            if (el) {
+                el.textContent = `${words} words (min 20)`;
+                el.className = words >= 20 ? 'text-emerald-400 text-xs tabular-nums font-semibold' : 'text-slate-500 text-xs tabular-nums';
+            }
+        };
+        textarea.addEventListener('input', updateCount);
+        textarea.focus();
+    }
+    
+    structuredSession.timerSeconds = 300;
+    structuredSession.timerInterval = setInterval(() => {
+        structuredSession.timerSeconds--;
+        const mins = Math.floor(Math.max(0, structuredSession.timerSeconds) / 60);
+        const secs = Math.max(0, structuredSession.timerSeconds) % 60;
+        const tel = document.getElementById('structured-timer');
+        if (tel) tel.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        if (structuredSession.timerSeconds <= 0) {
+            clearInterval(structuredSession.timerInterval);
+            if (typeof showToast === 'function') showToast('Time is up!', 'warning');
+            submitStructuredAnswer();
+        }
+    }, 1000);
+}
+
+async function submitStructuredAnswer() {
+    const answerInput = document.getElementById('structured-answer-input');
+    const answerText = answerInput ? answerInput.value.trim() : '';
+    
+    const words = answerText ? answerText.split(/\\s+/).filter(w => w.length > 0).length : 0;
+    if (words < 20) {
+        if (typeof showToast === 'function') showToast('Please provide a more detailed answer (min 20 words).', 'warning');
+        return;
+    }
+    
+    const btn = document.getElementById('btn-submit-structured');
+    if (btn) { btn.disabled = true; btn.innerHTML = 'Submitting...'; }
+    
+    if (structuredSession.timerInterval) {
+        clearInterval(structuredSession.timerInterval);
+    }
+    
+    const currentPhase = structuredSession.phases[structuredSession.currentPhaseIndex];
+    
+    const qaPair = {
+        question: structuredSession.currentQuestion.question,
+        answer: answerText
+    };
+    currentPhase.questions.push(qaPair);
+    structuredSession.allQAPairs.push(qaPair);
+    
+    try {
+        let isComplete = false;
+        if (!structuredSession.isFollowupTurn && currentPhase.questions.length < currentPhase.maxQuestions) {
+            structuredSession.isFollowupTurn = true;
+        } else {
+            structuredSession.isFollowupTurn = false;
+            if (currentPhase.questions.length >= currentPhase.maxQuestions) {
+                isComplete = true;
+            }
+        }
+        
+        if (isComplete && structuredSession.currentPhaseIndex >= structuredSession.phases.length - 1) {
+            return finishStructuredInterview();
+        }
+        
+        if (isComplete) {
+            return advanceToNextPhase();
+        }
+        
+        const res = await fetch('/api/interview/structured/next', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: structuredSession.sessionId,
+                current_phase: currentPhase.id,
+                candidate_answer: answerText,
+                previous_question: structuredSession.currentQuestion.question,
+                company_profile: structuredSession.companyProfile,
+                candidate_profile: structuredSession.candidateProfile,
+                difficulty: structuredSession.difficulty,
+                previous_questions: structuredSession.previousQuestions,
+                is_followup_turn: structuredSession.isFollowupTurn
+            })
+        });
+        
+        if (!res.ok) throw new Error('Failed to get next question');
+        
+        const data = await res.json();
+        structuredSession.currentQuestion = data.question;
+        structuredSession.previousQuestions.push(data.question.question);
+        
+        renderStructuredWorkstation();
+        
+    } catch (err) {
+        console.error(err);
+        if (typeof showToast === 'function') showToast('Error submitting answer', 'error');
+        if (btn) { btn.disabled = false; btn.innerHTML = 'Submit Answer →'; }
+    }
+}
+
+function advanceToNextPhase() {
+    structuredSession.currentPhaseIndex++;
+    if (structuredSession.currentPhaseIndex >= structuredSession.phases.length) {
+        return finishStructuredInterview();
+    }
+    
+    structuredSession.isFollowupTurn = false;
+    
+    fetch('/api/interview/structured/next', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            session_id: structuredSession.sessionId,
+            current_phase: structuredSession.phases[structuredSession.currentPhaseIndex].id,
+            candidate_answer: '',
+            previous_question: '',
+            company_profile: structuredSession.companyProfile,
+            candidate_profile: structuredSession.candidateProfile,
+            difficulty: structuredSession.difficulty,
+            previous_questions: structuredSession.previousQuestions,
+            is_followup_turn: false
+        })
+    }).then(res => res.json()).then(data => {
+        structuredSession.currentQuestion = data.question;
+        structuredSession.previousQuestions.push(data.question.question);
+        renderStructuredWorkstation();
+    }).catch(err => {
+        console.error(err);
+        if (typeof showToast === 'function') showToast('Error advancing to next phase', 'error');
+    });
+}
+
+async function finishStructuredInterview() {
+    const container = document.getElementById('simulator-content');
+    if (container) {
+        container.innerHTML = `
+          <div class="max-w-2xl mx-auto p-12 text-center">
+            <div class="text-6xl mb-4">🧠</div>
+            <h2 class="text-3xl font-bold text-white mb-2">Analyzing Your Performance...</h2>
+            <p class="text-slate-400">Our AI panel is evaluating your answers across all phases.</p>
+          </div>
+        `;
+    }
+    
+    try {
+        const turnsByPhase = {};
+        structuredSession.phases.forEach(p => {
+            turnsByPhase[p.id] = p.questions;
+        });
+        
+        const res = await fetch('/api/interview/structured/evaluate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                session_id: structuredSession.sessionId,
+                company_profile: structuredSession.companyProfile,
+                candidate_profile: structuredSession.candidateProfile,
+                turns_by_phase: turnsByPhase,
+                difficulty: structuredSession.difficulty
+            })
+        });
+        
+        if (!res.ok) throw new Error('Failed to evaluate');
+        const data = await res.json();
+        
+        renderStructuredEvaluation(data.evaluation);
+    } catch (err) {
+        console.error(err);
+        if (typeof showToast === 'function') showToast('Evaluation failed', 'error');
+    }
+}
+
+function renderStructuredEvaluation(evaluation) {
+    const container = document.getElementById('simulator-content');
+    if (!container) return;
+    
+    const score = evaluation.overall_score || 0;
+    const verdict = evaluation.hiring_verdict || 'MAYBE';
+    
+    let scoreColor = 'text-red-400';
+    let ringColor = 'border-red-500/50';
+    if (score >= 75) { scoreColor = 'text-emerald-400'; ringColor = 'border-emerald-500/50'; }
+    else if (score >= 60) { scoreColor = 'text-amber-400'; ringColor = 'border-amber-500/50'; }
+    
+    let verdictHtml = '';
+    if (verdict === 'HIRE') verdictHtml = '<span class="px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 font-bold uppercase tracking-wider text-sm">🏆 HIRE</span>';
+    else if (verdict === 'MAYBE') verdictHtml = '<span class="px-4 py-1.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/50 font-bold uppercase tracking-wider text-sm">🟡 MAYBE</span>';
+    else verdictHtml = '<span class="px-4 py-1.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/50 font-bold uppercase tracking-wider text-sm">❌ REJECT</span>';
+
+    const phaseScoresHtml = structuredSession.phases.map(p => {
+        const ps = (evaluation.phase_scores && evaluation.phase_scores[p.id]) || 0;
+        let pColor = 'text-slate-300';
+        if (ps >= 75) pColor = 'text-emerald-400';
+        else if (ps >= 60) pColor = 'text-amber-400';
+        else if (ps > 0) pColor = 'text-red-400';
+        
+        return `
+          <div class="phase-score-card bg-slate-900 border border-slate-700 rounded-xl p-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="phase-score-icon text-2xl">${p.icon}</span>
+              <span class="phase-score-name font-semibold text-slate-300">${p.name}</span>
+            </div>
+            <span class="phase-score-value font-bold ${pColor} text-lg">${ps}/100</span>
+          </div>
+        `;
+    }).join('');
+    
+    container.innerHTML = `
+      <div class="max-w-4xl mx-auto p-4 sm:p-8 animation-fade-in">
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-extrabold text-white mb-6">Final Structured Evaluation</h2>
+          <div class="flex flex-col items-center justify-center gap-4">
+            <div class="w-32 h-32 rounded-full border-4 ${ringColor} flex items-center justify-center text-4xl font-black ${scoreColor} bg-slate-900 shadow-2xl">
+              ${score}
+            </div>
+            <div>${verdictHtml}</div>
+          </div>
+        </div>
+        
+        <h3 class="text-xl font-bold text-white mb-4">Phase Performance</h3>
+        <div class="phase-scores-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+          ${phaseScoresHtml}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+          <div>
+            <h3 class="text-xl font-bold text-white mb-4">Key Strengths</h3>
+            <ul class="space-y-2">
+              ${(evaluation.strengths || []).map(s => `
+                <li class="flex items-start gap-2 text-sm text-slate-300">
+                  <span class="text-emerald-400 mt-0.5">✓</span>
+                  <span>${s}</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-xl font-bold text-white mb-4">Areas for Improvement</h3>
+            <ul class="space-y-2">
+              ${(evaluation.improvements || []).map(i => `
+                <li class="flex items-start gap-2 text-sm text-slate-300">
+                  <span class="text-amber-400 mt-0.5">!</span>
+                  <span>${i}</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        </div>
+        
+        ${evaluation.model_answer ? `
+        <div class="bg-slate-900 border border-slate-700 rounded-xl p-6 mb-10">
+          <h3 class="text-lg font-bold text-white mb-3">Model Answer (Weakest Response)</h3>
+          <p class="text-sm text-slate-400 leading-relaxed italic">${evaluation.model_answer}</p>
+        </div>
+        ` : ''}
+        
+        <div class="text-center">
+          <button class="btn-primary py-3 px-8 text-sm font-bold" onclick="if(typeof switchPlaciflyView === 'function') switchPlaciflyView('home')">Return to Dashboard</button>
+        </div>
+      </div>
+    `;
+}
+
+window.launchStructuredInterview = launchStructuredInterview;
+window.renderStructuredResumeSummary = renderStructuredResumeSummary;
+window.startStructuredInterviewSession = startStructuredInterviewSession;
+window.renderStructuredWorkstation = renderStructuredWorkstation;
+window.submitStructuredAnswer = submitStructuredAnswer;
+window.advanceToNextPhase = advanceToNextPhase;
+window.finishStructuredInterview = finishStructuredInterview;
+window.renderStructuredEvaluation = renderStructuredEvaluation;

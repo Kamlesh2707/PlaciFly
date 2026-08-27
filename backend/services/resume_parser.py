@@ -92,7 +92,15 @@ Return ONLY valid JSON (no markdown, no explanation) with this exact structure:
     "experience_level": "fresher",
     "strengths": ["area1", "area2"],
     "certifications": ["cert1", "cert2"],
-    "summary": "2-line summary of the candidate"
+    "summary": "2-line summary of the candidate",
+    "soft_skills": ["soft skill 1", "soft skill 2"],
+    "achievements": ["achievement 1", "achievement 2"],
+    "internships": [
+        {{"role": "Intern", "company": "Company Name", "duration": "3 months", "description": "Brief description"}}
+    ],
+    "work_experience": [
+        {{"role": "SDE", "company": "Company Name", "duration": "1 year", "description": "Brief description"}}
+    ]
 }}
 
 Rules:
@@ -126,6 +134,10 @@ Rules:
         profile.setdefault('strengths', [])
         profile.setdefault('certifications', [])
         profile.setdefault('summary', 'Candidate profile extracted from resume.')
+        profile.setdefault('soft_skills', [])
+        profile.setdefault('achievements', [])
+        profile.setdefault('internships', [])
+        profile.setdefault('work_experience', [])
         
         return profile
     
@@ -255,3 +267,22 @@ def get_skills_summary_for_prompt(profile):
     parts.append(f"Level: {profile.get('experience_level', 'fresher')}")
     
     return ' | '.join(parts) if parts else 'General fresher candidate'
+
+def get_resume_analysis_summary(profile):
+    """Generate a human-readable resume analysis summary for display."""
+    return {
+        "candidate_name": profile.get('name', 'Candidate'),
+        "experience_level": profile.get('experience_level', 'fresher'),
+        "education": profile.get('education', 'Not specified'),
+        "technical_skills": profile.get('skills', []) + profile.get('programming_languages', []),
+        "frameworks": profile.get('frameworks', []),
+        "projects_count": len(profile.get('projects', [])),
+        "project_names": [p.get('name', p) if isinstance(p, dict) else str(p) for p in profile.get('projects', [])],
+        "certifications": profile.get('certifications', []),
+        "achievements": profile.get('achievements', []),
+        "work_experience": profile.get('work_experience', []),
+        "internships": profile.get('internships', []),
+        "soft_skills": profile.get('soft_skills', []),
+        "key_strengths": profile.get('strengths', []),
+        "summary": profile.get('summary', '')
+    }

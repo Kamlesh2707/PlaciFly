@@ -7,10 +7,13 @@ from services.scenario_db import get_companies, get_fresh_scenarios, get_company
 from services.ai_service import evaluate_response, generate_custom_company_scenarios, generate_5_round_mock_drive, analyze_student_resume, generate_company_interviewer_question, generate_adaptive_followup, evaluate_full_interview_session, get_interviewer_for_difficulty
 from data.gamification import calculate_xp, check_new_badges, calculate_level
 from services.auth_service import generate_otp, verify_otp, send_otp_email, create_anonymous_session
-from services.resume_parser import parse_resume_skills, get_skills_summary_for_prompt
+from services.resume_parser import parse_resume_skills, get_skills_summary_for_prompt, get_resume_analysis_summary
 from services.puzzle_bank import get_puzzles_for_interview, get_puzzle_by_id, get_puzzle_count
 
 from services.security import rate_limiter, sanitize_input
+from services.company_analyzer import analyze_company_text
+from services.ai_service import generate_structured_interview_question, generate_structured_followup, evaluate_structured_interview
+
 
 app = Flask(__name__, static_folder='../frontend')
 app.config.from_object(Config)
@@ -484,6 +487,244 @@ def serve(path):
             return send_from_directory(app.static_folder, 'index.html')
         return "Frontend not found.", 404
 
+
+# ===========================
+# STRUCTURED INTERVIEW ENDPOINTS
+# ===========================
+import uuid
+
+@app.route('/api/company/analyze-text', methods=['POST'])
+def api_analyze_company_text():
+    data = request.get_json()
+    text = data.get('text', '').strip()
+    if not text:
+        return jsonify({"error": "Company information text is required"}), 400
+    text = sanitize_input(text)
+    from services.company_analyzer import analyze_company_text
+    analysis = analyze_company_text(text)
+    return jsonify({"analysis": analysis})
+
+@app.route('/api/interview/structured/start', methods=['POST'])
+def api_structured_interview_start():
+    data = request.get_json()
+    company_profile = data.get('company_profile', {})
+    candidate_profile = data.get('candidate_profile', {})
+    interview_type = data.get('interview_type', 'normal')
+    difficulty = data.get('difficulty', 'Medium')
+    
+    session_id = str(uuid.uuid4())
+    
+    # Using existing gamification/interviewer logic
+    from services.ai_service import get_interviewer_for_difficulty
+    interviewer = get_interviewer_for_difficulty({}, difficulty)
+    
+    question_data = generate_structured_interview_question(
+        'introduction', company_profile, candidate_profile, [], difficulty
+    )
+    
+    return jsonify({
+        "session_id": session_id,
+        "interviewer": interviewer,
+        "question": question_data.get('question', ''),
+        "phase": "introduction"
+    })
+
+@app.route('/api/interview/structured/next', methods=['POST'])
+def api_structured_interview_next():
+    data = request.get_json()
+    session_id = data.get('session_id')
+    current_phase = data.get('current_phase', 'introduction')
+    candidate_answer = data.get('candidate_answer', '')
+    previous_question = data.get('previous_question', '')
+    company_profile = data.get('company_profile', {})
+    candidate_profile = data.get('candidate_profile', {})
+    difficulty = data.get('difficulty', 'Medium')
+    previous_questions = data.get('previous_questions', [])
+    is_followup_turn = data.get('is_followup_turn', False)
+    
+    if is_followup_turn:
+        followup_data = generate_structured_followup(
+            previous_question, candidate_answer, current_phase, candidate_profile, company_profile, difficulty
+        )
+        return jsonify(followup_data)
+    else:
+        question_data = generate_structured_interview_question(
+            current_phase, company_profile, candidate_profile, previous_questions, difficulty
+        )
+        return jsonify(question_data)
+
+@app.route('/api/interview/structured/evaluate', methods=['POST'])
+def api_structured_interview_evaluate():
+    data = request.get_json()
+    turns_by_phase = data.get('turns_by_phase', {})
+    company_profile = data.get('company_profile', {})
+    candidate_profile = data.get('candidate_profile', {})
+    difficulty = data.get('difficulty', 'Medium')
+    session_id = data.get('session_id')
+    
+    evaluation = evaluate_structured_interview(
+        turns_by_phase, company_profile, candidate_profile, difficulty
+    )
+    
+    overall_score = evaluation.get('overall_score', 0)
+    xp_earned = calculate_xp(difficulty, overall_score)
+    
+    # Just passing dummy stats to check_new_badges
+    session_stats = {"total_completed": 1, "best_score": overall_score, "average_score": overall_score, "total_xp": xp_earned}
+    new_badges = check_new_badges(session_stats, [])
+    
+    return jsonify({
+        "evaluation": evaluation,
+        "xp_earned": xp_earned,
+        "new_badges": new_badges
+    })
+
+@app.route('/api/resume/parse-skills-enhanced', methods=['POST'])
+def api_parse_resume_skills_enhanced():
+    resume_text = ""
+    
+    if 'file' in request.files or 'resume_file' in request.files:
+        file = request.files.get('file') or request.files.get('resume_file')
+        if file and file.filename:
+            filename = file.filename.lower()
+            if filename.endswith('.pdf'):
+                from services.resume_parser import extract_text_from_pdf
+                resume_text = extract_text_from_pdf(file.read())
+            else:
+                try:
+                    resume_text = file.read().decode('utf-8', errors='ignore')
+                except Exception:
+                    resume_text = ""
+    
+    if not resume_text and request.is_json:
+        data = request.json or {}
+        resume_text = data.get('resume_text', '')
+    elif not resume_text and request.form:
+        resume_text = request.form.get('resume_text', '')
+    
+    if not resume_text or not resume_text.strip():
+        return jsonify({"error": "Please provide your resume text or upload a valid PDF file."}), 400
+    
+    from services.resume_parser import parse_resume_skills, get_resume_analysis_summary
+    profile = parse_resume_skills(resume_text)
+    summary = get_resume_analysis_summary(profile)
+    
+    return jsonify({"profile": profile, "summary": summary, "extracted_length": len(resume_text)})
+
+
+# ==============================================================================
+# DAILY INTERVIEW CHALLENGE API ENDPOINTS
+# ==============================================================================
+from services.daily_challenge_service import (
+    get_daily_questions,
+    validate_typed_answer,
+    get_leaderboard_data,
+    RAPID_FIRE_QUESTIONS,
+    SPRINT_MCQ_BANK,
+    LOGO_CHALLENGE_BANK
+)
+
+@app.route('/api/daily-challenge/questions', methods=['GET'])
+def api_daily_challenge_questions():
+    """Retrieve questions for the specified challenge mode."""
+    mode = request.args.get('mode', 'rapid_fire')
+    valid_modes = ['rapid_fire', 'mcq_sprint', 'logo_quiz']
+    if mode not in valid_modes:
+        mode = 'rapid_fire'
+    
+    questions = get_daily_questions(mode)
+    return jsonify({
+        "mode": mode,
+        "total_questions": len(questions),
+        "questions": questions
+    })
+
+@app.route('/api/daily-challenge/verify-answer', methods=['POST'])
+def api_daily_challenge_verify():
+    """Verify an individual question answer (typed or MCQ option index)."""
+    data = request.json or {}
+    mode = data.get('mode', 'rapid_fire')
+    question_id = data.get('question_id', '')
+    typed_answer = sanitize_input(data.get('typed_answer', '')).strip()
+    selected_option = data.get('selected_option', None)
+    
+    # Locate question
+    question_pool = RAPID_FIRE_QUESTIONS + SPRINT_MCQ_BANK + LOGO_CHALLENGE_BANK
+    q = next((item for item in question_pool if item["id"] == question_id), None)
+    
+    if not q:
+        return jsonify({"error": "Question not found."}), 404
+        
+    is_correct = False
+    
+    # Check typed answer first if provided
+    if typed_answer and "accepted_answers" in q:
+        is_correct = validate_typed_answer(typed_answer, q["accepted_answers"])
+    elif selected_option is not None:
+        try:
+            is_correct = (int(selected_option) == int(q["correct_option_index"]))
+        except (ValueError, TypeError):
+            is_correct = False
+            
+    double_points = bool(data.get('double_points', False))
+    points_multiplier = 2 if double_points else 1
+    
+    return jsonify({
+        "question_id": question_id,
+        "is_correct": is_correct,
+        "correct_option_index": q.get("correct_option_index", 0),
+        "correct_answer": q["options"][q.get("correct_option_index", 0)] if "options" in q else q.get("name", ""),
+        "explanation": q.get("explanation", ""),
+        "double_points": double_points,
+        "points_multiplier": points_multiplier
+    })
+
+@app.route('/api/daily-challenge/leaderboard', methods=['GET'])
+def api_daily_challenge_leaderboard():
+    """Get today's dynamic leaderboard."""
+    user_score = int(request.args.get('user_score', 0))
+    user_name = request.args.get('user_name', 'You (Candidate)')
+    board = get_leaderboard_data(user_score=user_score, user_name=user_name)
+    return jsonify({"leaderboard": board})
+
+@app.route('/api/daily-challenge/submit-session', methods=['POST'])
+def api_daily_challenge_submit():
+    """Submit full challenge session to calculate XP and unlock badges."""
+    data = request.json or {}
+    mode = data.get('mode', 'rapid_fire')
+    score = int(data.get('score', 0))
+    accuracy = float(data.get('accuracy', 0))
+    streak = int(data.get('streak', 1))
+    
+    # XP calculation
+    base_xp = score // 10
+    streak_bonus = streak * 15
+    total_xp = max(50, base_xp + streak_bonus)
+    
+    # Badges check
+    badges_earned = []
+    if accuracy == 100:
+        badges_earned.append({"name": "Flawless Execution", "icon": "🎯", "desc": "Achieved 100% accuracy in a Daily Challenge."})
+    if mode == "mcq_sprint" and score >= 2000:
+        badges_earned.append({"name": "Speed Demon", "icon": "⚡", "desc": "Crushed the 30s MCQ Speed Sprint."})
+    if mode == "rapid_fire" and score >= 800:
+        badges_earned.append({"name": "Rapid Fire Prodigy", "icon": "🔥", "desc": "Mastered Rapid Fire tech questions."})
+    if mode == "logo_quiz" and score >= 800:
+        badges_earned.append({"name": "Tech Stack Guru", "icon": "🧩", "desc": "Identified all developer logos with speed."})
+    if streak >= 3:
+        badges_earned.append({"name": "Streak Warrior", "icon": "🌟", "desc": "Maintained a 3+ day practice streak."})
+        
+    return jsonify({
+        "xp_earned": total_xp,
+        "streak": streak,
+        "badges_earned": badges_earned,
+        "message": "Challenge session saved successfully!"
+    })
+
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5001))
+    print(f"🚀 Starting Placifly Server on http://localhost:{port}")
+    app.run(debug=True, host='0.0.0.0', port=port)
+
 

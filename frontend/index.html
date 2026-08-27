@@ -17,6 +17,9 @@
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
   <!-- Custom Placifly Stylesheet -->
   <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -28,28 +31,79 @@
   <div id="intro-splash">
     <canvas id="flight-intro-canvas" class="intro-flight-canvas"></canvas>
     
+    <!-- Flying Paper Airplane (from logo icon) — flies across screen first -->
+    <div id="flying-airplane" class="flying-airplane">
+      <svg viewBox="0 0 120 120" width="80" height="80" xmlns="http://www.w3.org/2000/svg">
+        <!-- Wings -->
+        <path d="M10,72 Q20,65 32,68 L42,70 L32,74 Q20,77 10,72Z" fill="#4A3ADB" opacity="0.9"/>
+        <path d="M10,68 Q20,61 32,64 L42,66 L32,70 Q20,73 10,68Z" fill="#5B4AE8" opacity="0.85"/>
+        <path d="M10,64 Q20,57 34,60 L44,62 L34,66 Q20,69 10,64Z" fill="#6B5AF0" opacity="0.8"/>
+        <!-- Location Pin Shape -->
+        <path d="M45,30 C45,15 60,5 75,10 C90,15 95,30 90,45 L65,95 L40,45 C38,40 45,35 45,30Z" fill="url(#pinGrad)" stroke="none"/>
+        <!-- Paper Airplane inside pin -->
+        <path d="M52,55 L80,38 L62,60 L66,72 L58,58 L52,55Z" fill="#0A1E5E" stroke="none"/>
+        <path d="M52,55 L80,38 L62,60 Z" fill="#0D2970" stroke="none"/>
+        <defs>
+          <linearGradient id="pinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#00B4FF"/>
+            <stop offset="50%" style="stop-color:#0066FF"/>
+            <stop offset="100%" style="stop-color:#0A1E5E"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <!-- Glow trail behind airplane -->
+      <div class="airplane-glow-trail"></div>
+    </div>
+
     <div class="intro-content-wrapper">
       <div class="intro-logo-box">
-        <img src="assets/logo.png" alt="Placifly Logo" class="intro-logo-img">
+        <img src="assets/logo.png" alt="PlaciFly Logo" class="intro-logo-img">
       </div>
       
       <div class="intro-tagline">
-        Your Career. Your Journey. Your Placifly.
+        Prepare Smarter. Practice Better. Interview with Confidence.
       </div>
       
       <p class="intro-desc">
-        Practice smarter. Interview better. Reach your dream company.
+        AI-powered interview preparation platform that helps you practice with personalized questions based on your resume, target company, and job role.
       </p>
       
+      <div class="intro-features-grid">
+        <div class="intro-feature-card">
+          <span class="intro-feature-icon">🤖</span>
+          <span class="intro-feature-text">AI-Powered Mock Interviews</span>
+        </div>
+        <div class="intro-feature-card">
+          <span class="intro-feature-icon">📄</span>
+          <span class="intro-feature-text">Resume-Based Questions</span>
+        </div>
+        <div class="intro-feature-card">
+          <span class="intro-feature-icon">🏢</span>
+          <span class="intro-feature-text">Company-Specific Prep</span>
+        </div>
+        <div class="intro-feature-card">
+          <span class="intro-feature-icon">🎯</span>
+          <span class="intro-feature-text">Role-Based Questions</span>
+        </div>
+        <div class="intro-feature-card">
+          <span class="intro-feature-icon">💡</span>
+          <span class="intro-feature-text">Intelligent Follow-Ups</span>
+        </div>
+        <div class="intro-feature-card">
+          <span class="intro-feature-icon">🎤</span>
+          <span class="intro-feature-text">Realistic Simulation</span>
+        </div>
+      </div>
+      
       <div class="intro-btn-wrap">
-        <button class="btn-placifly-primary text-base" onclick="dismissIntroSplash()">
-          <span>Get Started</span>
+        <button class="btn-placifly-primary text-base" onclick="dismissIntroSplash('simulator')">
+          <span>Start Preparing</span>
           <span class="btn-arrow">→</span>
         </button>
       </div>
     </div>
 
-    <button class="absolute top-6 right-6 text-xs text-slate-400 hover:text-cyan-400 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition-colors" onclick="dismissIntroSplash()">
+    <button class="absolute top-6 right-6 text-xs text-slate-400 hover:text-cyan-400 px-3 py-1.5 rounded-lg border border-slate-800 bg-slate-900/60 transition-colors" onclick="dismissIntroSplash('home')">
       Skip Intro ✕
     </button>
   </div>
@@ -128,11 +182,11 @@
           </div>
 
           <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 leading-tight max-w-4xl mx-auto">
-            Your Career. Your Journey. <span class="hero-glow-title">Your Placifly.</span>
+            AI-Powered Interview <span class="hero-glow-title">Preparation Platform</span>
           </h1>
 
           <p class="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto mb-4 leading-relaxed font-medium">
-            Practice smarter. Interview better. Reach your dream company.
+            Practice with personalized questions based on your resume, target company, and job role. Get ready for your dream placement.
           </p>
 
           <p class="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -373,38 +427,115 @@
 
       <!-- DAILY INTERVIEW CHALLENGE -->
       <section class="max-w-7xl mx-auto px-4 sm:px-6 py-12" id="section-daily-challenge">
-        <div class="placifly-card p-8 border-cyan-500/30">
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+        <div class="placifly-card p-6 sm:p-8 border-cyan-500/30">
+          
+          <!-- Header Bar with Daily Streak -->
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
             <div>
-              <span class="text-xs font-bold text-amber-400 uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
-                DAILY PRACTICE HABIT
-              </span>
+              <div class="flex items-center gap-3">
+                <span class="text-xs font-bold text-amber-400 uppercase tracking-wider bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">
+                  🔥 GAMIFIED DAILY HABIT
+                </span>
+                <span class="text-xs font-bold text-cyan-400 bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20 flex items-center gap-1">
+                  <span>Streak:</span> <strong class="daily-streak-badge-val text-amber-300">1</strong> <span>Days</span>
+                </span>
+              </div>
               <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-2">Daily Interview Challenge</h2>
-              <p class="text-sm text-slate-400">4 focused questions every day to build consistent interview reflexes.</p>
+              <p class="text-sm text-slate-400">Fast, competitive, gamified daily practice modes with 2X Double Points and instant feedback.</p>
             </div>
-            <button class="btn-placifly-primary py-2.5 px-6 text-sm" onclick="startDailyChallenge()">
-              <span>Launch Daily Challenge →</span>
-            </button>
+            
+            <div class="flex items-center gap-3">
+              <button class="btn-placifly-primary py-2.5 px-6 text-sm" onclick="DailyChallengeEngine.startChallenge('rapid_fire')">
+                <span>⚡ Quick Play (Rapid Fire) →</span>
+              </button>
+            </div>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
-              <span class="font-bold text-cyan-300 block mb-1">👔 1 HR Question</span>
-              <p class="text-slate-400">"Describe a project challenge where requirements changed midway."</p>
+          <!-- 3 Distinct Challenge Mode Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Mode 1: Rapid Fire -->
+            <div class="p-6 rounded-2xl bg-[#030B1E] border border-cyan-500/30 hover:border-cyan-400/80 transition-all flex flex-col justify-between group">
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(0,210,255,0.15)]">
+                    ⚡
+                  </div>
+                  <span class="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/30">
+                    🔥 2X Double Points
+                  </span>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Rapid Fire Challenge</h3>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                  1 question at a time across AI, LLMs, Cloud, Web & Frameworks. Type directly in 15s or wait for MCQ hints!
+                </p>
+                <div class="space-y-1 text-[11px] text-slate-400 mb-6">
+                  <div class="flex items-center gap-1.5"><span class="text-cyan-400">⏱️</span> 30s per question</div>
+                  <div class="flex items-center gap-1.5"><span class="text-amber-400">💡</span> 15s MCQ Hint Reveal</div>
+                  <div class="flex items-center gap-1.5"><span class="text-purple-400">🏆</span> Double Points Final Question</div>
+                </div>
+              </div>
+              <button class="btn-placifly-primary w-full py-2.5 text-xs font-bold" onclick="DailyChallengeEngine.startChallenge('rapid_fire')">
+                <span>Play Rapid Fire →</span>
+              </button>
             </div>
-            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
-              <span class="font-bold text-blue-300 block mb-1">💻 1 Technical Question</span>
-              <p class="text-slate-400">"Explain indexing in relational databases and when it hurts performance."</p>
+
+            <!-- Mode 2: 30 MCQ Speed Sprint -->
+            <div class="p-6 rounded-2xl bg-[#030B1E] border border-rose-500/30 hover:border-rose-400/80 transition-all flex flex-col justify-between group">
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(239,68,68,0.15)]">
+                    ⏱️
+                  </div>
+                  <span class="text-[10px] font-bold text-rose-300 bg-rose-500/10 px-2.5 py-1 rounded-full border border-rose-500/30">
+                    🚀 Progressive Speed (1.0x ➔ 2.0x)
+                  </span>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">30 MCQ Speed Sprint</h3>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                  30 MCQs across Python, JS, DSA & AI with progressive speed: Normal (30s) ➔ 1.5X (20s) ➔ 2.0X (15s).
+                </p>
+                <div class="space-y-1 text-[11px] text-slate-400 mb-6">
+                  <div class="flex items-center gap-1.5"><span class="text-cyan-400">⚡</span> Q1–14: Normal Speed (30s)</div>
+                  <div class="flex items-center gap-1.5"><span class="text-amber-400">🔥</span> Q15–20: 1.5X Speed (20s)</div>
+                  <div class="flex items-center gap-1.5"><span class="text-rose-400">🚀</span> Q21–30: 2.0X Speed (15s)</div>
+                  <div class="flex items-center gap-1.5"><span class="text-purple-400">⚡</span> Q30: 2X Double Points</div>
+                </div>
+              </div>
+              <button class="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(239,68,68,0.3)]" onclick="DailyChallengeEngine.startChallenge('mcq_sprint')">
+                <span>Play Speed Sprint (Dynamic Speed) →</span>
+              </button>
             </div>
-            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
-              <span class="font-bold text-amber-300 block mb-1">🧑‍💻 1 Coding Task</span>
-              <p class="text-slate-400">"Implement an algorithm to reverse words in a string in O(1) space."</p>
+
+            <!-- Mode 3: Tech Logo Challenge -->
+            <div class="p-6 rounded-2xl bg-[#030B1E] border border-purple-500/30 hover:border-purple-400/80 transition-all flex flex-col justify-between group">
+              <div>
+                <div class="flex items-center justify-between mb-4">
+                  <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 text-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(168,85,247,0.15)]">
+                    🧩
+                  </div>
+                  <span class="text-[10px] font-bold text-purple-300 bg-purple-500/10 px-2.5 py-1 rounded-full border border-purple-500/30">
+                    🚀 Dynamic Speed (1.0x ➔ 2.5x)
+                  </span>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-1.5">Tech Logo Challenge</h3>
+                <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                  30 randomized technology logos with automatic difficulty scaling: Normal (30s) ➔ 1.5X (20s) ➔ 2.5X (12s).
+                </p>
+                <div class="space-y-1 text-[11px] text-slate-400 mb-6">
+                  <div class="flex items-center gap-1.5"><span class="text-cyan-400">⚡</span> Q1–14: Normal Speed (30s)</div>
+                  <div class="flex items-center gap-1.5"><span class="text-amber-400">🔥</span> Q15–20: 1.5X Speed (20s)</div>
+                  <div class="flex items-center gap-1.5"><span class="text-rose-400">🚀</span> Q21–30: 2.5X Speed (12s)</div>
+                  <div class="flex items-center gap-1.5"><span class="text-purple-400">⚡</span> Q30: 2X Double Points</div>
+                </div>
+              </div>
+              <button class="w-full py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all shadow-[0_0_15px_rgba(168,85,247,0.3)]" onclick="DailyChallengeEngine.startChallenge('logo_quiz')">
+                <span>Play Logo Quiz (Dynamic Speed) →</span>
+              </button>
             </div>
-            <div class="p-4 rounded-xl bg-[#030B1E] border border-slate-800">
-              <span class="font-bold text-emerald-300 block mb-1">🧩 1 Logic Puzzle</span>
-              <p class="text-slate-400">"The 3-switch and closed door light bulb puzzle."</p>
-            </div>
+
           </div>
+
         </div>
       </section>
 
@@ -450,57 +581,109 @@
       <div id="report-content" class="mt-6"></div>
     </div>
 
+    <!-- ================================================== -->
+    <!-- VIEW C: GAMIFIED DAILY INTERVIEW CHALLENGE         -->
+    <!-- ================================================== -->
+    <div id="view-daily-challenge" class="placifly-main-view hidden max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      <div id="daily-challenge-container"></div>
+    </div>
+
   </main>
 
   <!-- ==================================================== -->
   <!-- 4. CUSTOM COMPANY MODAL                             -->
   <!-- ==================================================== -->
-  <div id="custom-company-modal" class="auth-modal-overlay hidden" onclick="if(event.target===this) closeCustomCompanyModal()">
-    <div class="auth-card max-w-xl p-6 sm:p-8">
-      <div class="flex items-center justify-between mb-4">
-        <div>
-          <span class="text-xs font-bold text-cyan-400 uppercase tracking-wider">AI COMPANY INTELLIGENCE</span>
-          <h3 class="text-xl font-bold text-white mt-1">Prepare for Any Company</h3>
-        </div>
-        <button class="text-slate-400 hover:text-white" onclick="closeCustomCompanyModal()">✕</button>
+  <!-- ============================================== -->
+  <!-- CUSTOM COMPANY ANALYSIS MODAL (REDESIGNED)     -->
+  <!-- ============================================== -->
+  <div id="custom-company-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/70 backdrop-blur-sm">
+    <div class="custom-modal-container">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span class="text-2xl">🏢</span> Custom Company Interview
+        </h2>
+        <button onclick="closeCustomCompanyModal()" class="text-slate-400 hover:text-white transition-colors text-xl">✕</button>
       </div>
 
-      <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-        Paste a company website URL or domain name. Placifly's AI will analyze public data to construct a tailored 5-round interview blueprint.
-      </p>
-
-      <div class="space-y-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1.5">Company Website URL</label>
-          <input type="text" id="custom-company-url-input" placeholder="https://example-company.com" class="auth-input text-sm" onkeydown="if(event.key==='Enter') executeCompanyUrlAnalysis()">
+      <!-- Step Indicator -->
+      <div class="custom-modal-steps" id="custom-modal-step-indicator">
+        <div class="custom-step active" id="custom-step-1-indicator">
+          <span class="custom-step-num">1</span>
+          <span class="custom-step-label">Company Info</span>
         </div>
+        <div class="custom-step-line"></div>
+        <div class="custom-step" id="custom-step-2-indicator">
+          <span class="custom-step-num">2</span>
+          <span class="custom-step-label">Analysis</span>
+        </div>
+        <div class="custom-step-line"></div>
+        <div class="custom-step" id="custom-step-3-indicator">
+          <span class="custom-step-num">3</span>
+          <span class="custom-step-label">Resume Upload</span>
+        </div>
+      </div>
 
-        <button class="btn-placifly-primary w-full py-3 text-sm" onclick="executeCompanyUrlAnalysis()" id="btn-analyze-company">
-          <span>Analyze Company & Start →</span>
+      <!-- Step 1: Enter Company Information -->
+      <div id="custom-step-1" class="custom-step-content">
+        <p class="text-slate-300 text-sm mb-4">Paste any information about the company you're interviewing with. You can include the company name, website URL, job description, or any other relevant details.</p>
+        <textarea id="custom-company-text-input" class="custom-company-textarea" rows="10" placeholder="Paste company information here...
+
+Examples of what you can paste:
+• Company name and website URL
+• Job description from the posting
+• Company about page content
+• Any details about the role or company
+
+The more information you provide, the better your interview preparation will be."></textarea>
+        <button id="custom-analyze-btn" class="btn-placifly-primary w-full mt-4" onclick="executeCompanyTextAnalysis()">
+          <span>🔍 Analyze Company</span>
         </button>
-
-        <!-- Dynamic Company Analysis Result Box -->
-        <div id="custom-company-analysis-box" class="hidden p-4 rounded-xl bg-[#030B1E] border border-cyan-500/30 text-xs space-y-2 mt-4">
-          <div class="flex items-center justify-between pb-2 border-b border-slate-800">
-            <h4 class="font-bold text-white text-sm" id="analyzed-comp-name">Company Name</h4>
-            <span class="text-cyan-300 font-semibold" id="analyzed-comp-industry">Industry</span>
-          </div>
-          <p class="text-slate-300" id="analyzed-comp-culture"></p>
-          <div class="pt-2">
-            <span class="font-bold text-slate-400 block mb-1">Recommended Preparation Focus:</span>
-            <div id="analyzed-comp-prep-areas" class="flex flex-wrap gap-1 text-[10px]"></div>
-          </div>
-          <div class="pt-3 flex justify-end">
-            <button class="btn-placifly-primary py-2 px-5 text-xs" onclick="launchCustomCompanyInterview()">
-              Start Custom Interview →
-            </button>
-          </div>
+        <div id="custom-analysis-loading" class="hidden mt-4 text-center">
+          <div class="inline-block w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-cyan-400 text-sm mt-2">Analyzing company information...</p>
         </div>
-
-        <p class="text-[10px] text-slate-500 text-center italic">
-          * AI-generated practice recommendations based on publicly available domain info.
-        </p>
       </div>
+
+      <!-- Step 2: Company Analysis Results -->
+      <div id="custom-step-2" class="custom-step-content hidden">
+        <div class="custom-analysis-complete">
+          <span class="text-2xl">✅</span>
+          <span class="text-lg font-semibold text-emerald-400">Company Analysis Complete</span>
+        </div>
+        <div id="custom-company-profile-card" class="custom-company-profile">
+          <!-- Dynamically filled by JS -->
+        </div>
+        <button class="btn-placifly-primary w-full mt-4" onclick="goToCustomStep3()">
+          <span>📄 Upload Resume & Start Interview</span>
+        </button>
+      </div>
+
+      <!-- Step 3: Resume Upload -->
+      <div id="custom-step-3" class="custom-step-content hidden">
+        <p class="text-slate-300 text-sm mb-4">Upload your resume so the AI can personalize interview questions based on your skills and experience.</p>
+        <div class="custom-resume-upload-area" id="custom-resume-drop-zone">
+          <div class="text-4xl mb-3">📄</div>
+          <p class="text-white font-medium">Drag & drop your resume here</p>
+          <p class="text-slate-400 text-sm mt-1">PDF or TXT format</p>
+          <input type="file" id="custom-resume-file-input" accept=".pdf,.txt" class="hidden" onchange="handleCustomResumeFile(event)">
+          <button class="btn-placifly-secondary mt-3 text-sm" onclick="document.getElementById('custom-resume-file-input').click()">
+            Browse Files
+          </button>
+        </div>
+        <div class="my-3 text-center text-slate-500 text-sm">— OR paste your resume text —</div>
+        <textarea id="custom-resume-text-input" class="custom-company-textarea" rows="6" placeholder="Paste your resume content here..."></textarea>
+        <div id="custom-resume-file-name" class="hidden mt-2 text-sm text-cyan-400"></div>
+        <button id="custom-start-interview-btn" class="btn-placifly-primary w-full mt-4" onclick="startCustomCompanyInterview()">
+          <span>🚀 Analyze Resume & Start Interview</span>
+        </button>
+        <div id="custom-resume-loading" class="hidden mt-4 text-center">
+          <div class="inline-block w-6 h-6 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin"></div>
+          <p class="text-cyan-400 text-sm mt-2">Analyzing resume and preparing your interview...</p>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -658,6 +841,8 @@
   <!-- ==================================================== -->
   <!-- 7. SCRIPTS                                           -->
   <!-- ==================================================== -->
+  <script src="js/gamification.js"></script>
+  <script src="js/daily_challenge.js"></script>
   <script src="js/simulator.js"></script>
   <script src="js/app.js"></script>
 </body>

@@ -91,3 +91,70 @@ Return a structured JSON summary (no markdown):
         "verified": False,
         "note": "AI-generated practice preparation recommendations based on public domain data."
     }
+
+def analyze_company_text(text_input):
+    """
+    Analyze free-form text (company name, URL, job description) to extract structured company profile.
+    """
+    text = text_input.strip()
+    
+    # If the text looks like just a URL/domain, delegate to existing analyze_company_url
+    if re.match(r'^(https?://)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(/.*)?$', text.split()[0]) and len(text.split()) == 1:
+        return analyze_company_url(text)
+
+    if _gemini_model:
+        try:
+            prompt = f"""You are an AI placement research assistant for Placifly.
+Analyze the following free-form company information or job description:
+
+\"\"\"
+{text[:3000]}
+\"\"\"
+
+Return a structured JSON summary (no markdown):
+{{
+    "name": "Company Name",
+    "domain": "company.com (if found)",
+    "industry": "Industry category",
+    "description": "What the company does (2-3 sentences)",
+    "products_services": ["Product 1", "Product 2", "Product 3"],
+    "business_model": "Brief business model description",
+    "technologies": ["Tech 1", "Tech 2", "Tech 3", "Tech 4"],
+    "culture_values": "Company culture and values (1-2 sentences)",
+    "job_description_summary": "Summary of job requirements if JD was provided",
+    "required_skills": ["Skill 1", "Skill 2"],
+    "interview_relevant_info": "Key info candidates should know for interviews",
+    "prep_areas": ["Focus area 1", "Focus area 2"],
+    "verified": false,
+    "note": "AI-generated analysis"
+}}
+"""
+            res = _gemini_model.generate_content(prompt, generation_config={'temperature': 0.2})
+            res_text = res.text.strip()
+            res_text = re.sub(r'^```(?:json)?\s*', '', res_text)
+            res_text = re.sub(r'\s*```$', '', res_text)
+            import json
+            data = json.loads(res_text.strip())
+            data["verified"] = False
+            data["note"] = "AI-generated analysis"
+            return data
+        except Exception as e:
+            print(f"[Company Analyzer LLM Error] {e}")
+
+    # Fallback Heuristic Analysis
+    return {
+        "name": "Unknown Company",
+        "domain": "",
+        "industry": "Technology",
+        "description": "Could not fully analyze the company text.",
+        "products_services": ["Digital Services"],
+        "business_model": "Technology Provider",
+        "technologies": ["Web Technologies"],
+        "culture_values": "Fast-paced environment",
+        "job_description_summary": "General tech role based on provided text",
+        "required_skills": ["Problem Solving", "Programming"],
+        "interview_relevant_info": "Focus on core computer science fundamentals",
+        "prep_areas": ["Data Structures", "System Design"],
+        "verified": False,
+        "note": "Fallback AI-generated analysis"
+    }

@@ -460,6 +460,15 @@
       "category": "Behavioral",
       "question_preview": "Describe a challenging situation where 'Educational background' was critical. How did you approach i",
       "timestamp": 1787327372.1438124
+    },
+    {
+      "question_hash": "d194c3cbd7c3dcd6",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "SQL 2nd highest salary query (subquery and DENSE_RANK)",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Team conflict resolution' was critical. How did you approach",
+      "timestamp": 1787412293.628177
     }
   ],
   "session-13098": [
@@ -898,6 +907,61 @@
       "category": "Technical",
       "question_preview": "We're working on a project at Infosys that heavily uses Basic networking (TCP/IP, DNS). Walk me thro",
       "timestamp": 1787334718.9432795
+    }
+  ],
+  "session-21634": [
+    {
+      "question_hash": "8d3ae52bf1bfd550",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "String manipulation basics",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Why this company' was critical. How did you approach it, and",
+      "timestamp": 1787408056.1481862
+    }
+  ],
+  "session-84101": [
+    {
+      "question_hash": "5ecd3a11e9eed7bb",
+      "company": "Google",
+      "difficulty": "Medium",
+      "topic": "Heap/Priority Queue operations",
+      "category": "Behavioral",
+      "question_preview": "Describe a challenging situation where 'Cross-functional teamwork' was critical. How did you approac",
+      "timestamp": 1787410491.863761
+    }
+  ],
+  "session-53428": [
+    {
+      "question_hash": "5c7a56bffa71be25",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "SQL 2nd highest salary query (subquery and DENSE_RANK)",
+      "category": "Behavioral",
+      "question_preview": "I want to understand how you handle 'Team conflict resolution'. Can you walk me through a real exper",
+      "timestamp": 1787412224.3753228
+    }
+  ],
+  "session-58228": [
+    {
+      "question_hash": "8da6dab9f2b70048",
+      "company": "TCS",
+      "difficulty": "Medium",
+      "topic": "DBMS Normalization (1NF, 2NF, 3NF)",
+      "category": "Technical",
+      "question_preview": "We're working on a project at TCS that heavily uses DBMS Normalization (1NF, 2NF, 3NF). Walk me thro",
+      "timestamp": 1787412314.205024
+    }
+  ],
+  "session-87433": [
+    {
+      "question_hash": "303aeba4fc600c23",
+      "company": "TCS",
+      "difficulty": "Easy",
+      "topic": "SQL SELECT, INSERT, UPDATE, DELETE",
+      "category": "Behavioral",
+      "question_preview": "I want to understand how you handle 'Why this company'. Can you walk me through a real experience fr",
+      "timestamp": 1787473852.924782
     }
   ]
 }

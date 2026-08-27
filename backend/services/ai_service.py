@@ -947,3 +947,112 @@ if not analyze_student_resume:
             "expected_interview_questions": [f"Explain project architecture for {target_company}."],
             "formatting_tips": ["Quantify outcomes."]
         }
+
+
+def generate_structured_interview_question(phase, company_profile, candidate_profile, interview_context, difficulty='Medium'):
+    import json
+    import re
+    if not genai.GenerativeModel("gemini-2.0-flash"):
+        return {"question": f"Can you talk about your experience for the {phase} phase?", "context": "Fallback", "phase": phase, "difficulty": difficulty}
+    
+    prompt = f"""You are an expert technical interviewer at {company_profile.get('name', 'the company')}.
+Phase: {phase}
+Difficulty: {difficulty}
+
+Company Profile:
+{json.dumps(company_profile)}
+
+Candidate Profile:
+{json.dumps(candidate_profile)}
+
+Interview Context (Previous questions):
+{json.dumps(interview_context)}
+
+Generate a single interview question for this specific phase.
+- introduction: Welcome the candidate, ask them to introduce themselves.
+- company_knowledge: Ask about the company, its products, or why they want to work there.
+- resume_based: Ask about their specific skills, projects, or education.
+- role_requirements: Ask about skills/responsibilities expected for the role.
+- common_interview: Ask standard HR questions (strengths, goals).
+- technical_scenario: Ask a technical or scenario-based question suitable for their level.
+
+Return a JSON with keys: "question", "context", "phase", "difficulty" (do not use markdown blocks).
+"""
+    try:
+        res = genai.GenerativeModel("gemini-2.0-flash").generate_content(prompt, generation_config={'temperature': 0.6})
+        text = res.text.strip()
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```$', '', text)
+        return json.loads(text)
+    except Exception as e:
+        print(f"Error generating structured interview question: {e}")
+        return {"question": f"Tell me about your experience regarding {phase}.", "context": "Fallback question", "phase": phase, "difficulty": difficulty}
+
+def generate_structured_followup(previous_question, candidate_answer, phase, candidate_profile, company_profile, difficulty='Medium'):
+    import json
+    import re
+    if not genai.GenerativeModel("gemini-2.0-flash"):
+        return {"question": "Could you elaborate on that?", "context": "Fallback followup", "is_followup": True, "phase": phase}
+    
+    prompt = f"""You are an expert technical interviewer at {company_profile.get('name', 'the company')}.
+You are in the {phase} phase of the interview.
+
+Previous Question: {previous_question}
+Candidate's Answer: {candidate_answer}
+
+Candidate Profile: {json.dumps(candidate_profile)}
+Difficulty: {difficulty}
+
+Generate an intelligent follow-up question that probes deeper into their answer.
+Return a JSON with keys: "question", "context", "is_followup": true, "phase" (do not use markdown blocks).
+"""
+    try:
+        res = genai.GenerativeModel("gemini-2.0-flash").generate_content(prompt, generation_config={'temperature': 0.6})
+        text = res.text.strip()
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```$', '', text)
+        return json.loads(text)
+    except Exception as e:
+        print(f"Error generating structured followup: {e}")
+        return {"question": "Can you elaborate further?", "context": "Fallback", "is_followup": True, "phase": phase}
+
+def evaluate_structured_interview(turns_by_phase, company_profile, candidate_profile, difficulty='Medium'):
+    import json
+    import re
+    if not genai.GenerativeModel("gemini-2.0-flash"):
+        return {"overall_score": 50, "verdict": "MAYBE", "message": "Fallback evaluation."}
+    
+    prompt = f"""You are an expert technical interviewer evaluating a full interview.
+Difficulty: {difficulty}
+
+Candidate Profile: {json.dumps(candidate_profile)}
+Company: {company_profile.get('name', 'the company')}
+
+Interview Transcript by Phase:
+{json.dumps(turns_by_phase)}
+
+Evaluate the interview comprehensively.
+Provide an overall score (0-100), a verdict (HIRE >= 75, MAYBE 60-74, REJECT < 60).
+Provide 9 rubric scores out of 100: Communication, Technical Understanding, Problem Solving, Role Fit, Company Knowledge, Leadership, Culture Fit, Clarity, and Confidence.
+List strengths and areas for improvement. Provide a model answer for the weakest response.
+
+Return a JSON (no markdown):
+{{
+  "overall_score": 85,
+  "verdict": "HIRE",
+  "phase_scores": {{"introduction": 90, "technical_scenario": 80}},
+  "rubric": {{"Communication": 90, "Technical Understanding": 80, "Problem Solving": 85, "Role Fit": 80, "Company Knowledge": 70, "Leadership": 75, "Culture Fit": 85, "Clarity": 90, "Confidence": 80}},
+  "strengths": ["Clear communication", "Good technical base"],
+  "areas_for_improvement": ["Company knowledge", "System design"],
+  "weakest_response_feedback": {{"question": "...", "model_answer": "..."}}
+}}
+"""
+    try:
+        res = genai.GenerativeModel("gemini-2.0-flash").generate_content(prompt, generation_config={'temperature': 0.2})
+        text = res.text.strip()
+        text = re.sub(r'^```(?:json)?\s*', '', text)
+        text = re.sub(r'\s*```$', '', text)
+        return json.loads(text)
+    except Exception as e:
+        print(f"Error evaluating structured interview: {e}")
+        return {"overall_score": 65, "verdict": "MAYBE", "message": "Evaluation failed due to error."}

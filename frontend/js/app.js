@@ -43,7 +43,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // If user already visited intro this session, skip automatically
   if (sessionStorage.getItem('placifly_intro_seen')) {
     const splash = document.getElementById('intro-splash');
-    if (splash) splash.classList.add('fade-out');
+    if (splash) {
+      splash.classList.add('fade-out');
+      splash.style.display = 'none';
+    }
   }
 });
 
@@ -74,92 +77,128 @@ function initIntroFlightAnimation() {
     height = canvas.height = window.innerHeight;
   });
 
+  // Sparkle particles that appear along the flight path
+  const particles = [];
   let progress = 0;
-  const trail = [];
+  const startTime = performance.now();
+  const flightDuration = 2600; // ms, matches CSS animation
 
-  function drawPlane(x, y, angle) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(angle);
+  // Flight path control points (matches CSS keyframes approximately)
+  function getFlightPosition(t) {
+    // Bezier curve from bottom-left to center
+    const p0 = { x: -50, y: height * 0.75 };
+    const p1 = { x: width * 0.3, y: height * 0.35 };
+    const p2 = { x: width * 0.55, y: height * 0.3 };
+    const p3 = { x: width * 0.5, y: height * 0.42 };
 
-    // Jet Glow
-    ctx.shadowColor = '#00F0FF';
-    ctx.shadowBlur = 20;
-
-    // Supersonic Airplane Body
-    ctx.fillStyle = '#FFFFFF';
-    ctx.beginPath();
-    ctx.moveTo(18, 0);
-    ctx.lineTo(-12, -7);
-    ctx.lineTo(-8, 0);
-    ctx.lineTo(-12, 7);
-    ctx.closePath();
-    ctx.fill();
-
-    // Cyan Jet Engine Accent
-    ctx.fillStyle = '#00D2FF';
-    ctx.beginPath();
-    ctx.moveTo(-8, -2);
-    ctx.lineTo(-14, 0);
-    ctx.lineTo(-8, 2);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.restore();
+    const mt = 1 - t;
+    return {
+      x: mt*mt*mt*p0.x + 3*mt*mt*t*p1.x + 3*mt*t*t*p2.x + t*t*t*p3.x,
+      y: mt*mt*mt*p0.y + 3*mt*mt*t*p1.y + 3*mt*t*t*p2.y + t*t*t*p3.y
+    };
   }
 
-  function animateFlight() {
-    ctx.clearRect(0, 0, width, height);
-
-    if (progress < 1.05) {
-      progress += 0.009;
-
-      // Smooth curved flight path
-      const p0 = { x: -50, y: height * 0.75 };
-      const p1 = { x: width * 0.4, y: height * 0.65 };
-      const p2 = { x: width * 0.6, y: height * 0.25 };
-      const p3 = { x: width + 80, y: height * 0.15 };
-
-      const t = Math.min(progress, 1);
-      const x = Math.pow(1-t, 3)*p0.x + 3*Math.pow(1-t, 2)*t*p1.x + 3*(1-t)*Math.pow(t, 2)*p2.x + Math.pow(t, 3)*p3.x;
-      const y = Math.pow(1-t, 3)*p0.y + 3*Math.pow(1-t, 2)*t*p1.y + 3*(1-t)*Math.pow(t, 2)*p2.y + Math.pow(t, 3)*p3.y;
-
-      const dx = 3*Math.pow(1-t, 2)*(p1.x - p0.x) + 6*(1-t)*t*(p2.x - p1.x) + 3*Math.pow(t, 2)*(p3.x - p2.x);
-      const dy = 3*Math.pow(1-t, 2)*(p1.y - p0.y) + 6*(1-t)*t*(p2.y - p1.y) + 3*Math.pow(t, 2)*(p3.y - p2.y);
-      const angle = Math.atan2(dy, dx);
-
-      trail.push({ x, y, alpha: 1.0, size: 3 });
-
-      // Draw Glowing Jet Trail
-      for (let i = 0; i < trail.length; i++) {
-        const pt = trail[i];
-        pt.alpha -= 0.006;
-        if (pt.alpha > 0) {
-          ctx.shadowColor = '#00D2FF';
-          ctx.shadowBlur = 12;
-          ctx.fillStyle = `rgba(0, 210, 255, ${pt.alpha * 0.7})`;
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, pt.size * (i / trail.length + 0.5), 0, Math.PI * 2);
-          ctx.fill();
-        }
-      }
-
-      if (progress <= 1.0) {
-        drawPlane(x, y, angle);
-      }
-
-      requestAnimationFrame(animateFlight);
+  function spawnParticle(x, y) {
+    for (let i = 0; i < 3; i++) {
+      particles.push({
+        x: x + (Math.random() - 0.5) * 20,
+        y: y + (Math.random() - 0.5) * 20,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: (Math.random() - 0.5) * 1.5,
+        alpha: 0.6 + Math.random() * 0.4,
+        size: 1 + Math.random() * 3,
+        hue: 190 + Math.random() * 30 // cyan range
+      });
     }
   }
 
-  requestAnimationFrame(animateFlight);
+  function animateTrail() {
+    ctx.clearRect(0, 0, width, height);
+    const elapsed = performance.now() - startTime - 200; // 200ms delay like CSS
+    progress = Math.max(0, Math.min(elapsed / flightDuration, 1));
+
+    // Spawn particles along flight path
+    if (progress > 0 && progress < 0.85) {
+      const pos = getFlightPosition(progress);
+      spawnParticle(pos.x, pos.y);
+
+      // Draw glowing trail line
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(0, 210, 255, 0.15)';
+      ctx.lineWidth = 2;
+      ctx.shadowColor = '#00D2FF';
+      ctx.shadowBlur = 15;
+      const steps = Math.floor(progress * 50);
+      for (let i = 0; i <= steps; i++) {
+        const t = i / 50;
+        const p = getFlightPosition(t);
+        if (i === 0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      }
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+    }
+
+    // Update and draw particles
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha -= 0.008;
+      p.size *= 0.995;
+
+      if (p.alpha <= 0) {
+        particles.splice(i, 1);
+        continue;
+      }
+
+      ctx.beginPath();
+      ctx.fillStyle = `hsla(${p.hue}, 100%, 70%, ${p.alpha})`;
+      ctx.shadowColor = `hsla(${p.hue}, 100%, 70%, ${p.alpha * 0.5})`;
+      ctx.shadowBlur = 8;
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+
+    // Center glow burst when airplane arrives
+    if (progress > 0.8 && progress < 1) {
+      const burstProgress = (progress - 0.8) / 0.2;
+      const burstRadius = burstProgress * 150;
+      const burstAlpha = (1 - burstProgress) * 0.3;
+      const cx = width * 0.5;
+      const cy = height * 0.42;
+      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, burstRadius);
+      grad.addColorStop(0, `rgba(0, 210, 255, ${burstAlpha})`);
+      grad.addColorStop(0.5, `rgba(0, 102, 255, ${burstAlpha * 0.5})`);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(cx, cy, burstRadius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Keep animating while particles exist or flight is active
+    if (progress < 1 || particles.length > 0) {
+      requestAnimationFrame(animateTrail);
+    }
+  }
+
+  requestAnimationFrame(animateTrail);
 }
 
-function dismissIntroSplash() {
+function dismissIntroSplash(targetView = 'simulator') {
   const splash = document.getElementById('intro-splash');
   if (splash) {
     splash.classList.add('fade-out');
+    splash.style.pointerEvents = 'none';
     sessionStorage.setItem('placifly_intro_seen', 'true');
+    setTimeout(() => {
+      splash.style.display = 'none';
+    }, 600);
+  }
+  if (targetView) {
+    switchPlaciflyView(targetView);
   }
 }
 
@@ -321,12 +360,226 @@ function prepareForCompany(companyName) {
 
 function openCustomCompanyModal() {
   const modal = document.getElementById('custom-company-modal');
-  if (modal) modal.classList.remove('hidden');
+  if (modal) {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    
+    const step1 = document.getElementById('custom-step-1');
+    const step2 = document.getElementById('custom-step-2');
+    const step3 = document.getElementById('custom-step-3');
+    if (step1) step1.classList.remove('hidden');
+    if (step2) step2.classList.add('hidden');
+    if (step3) step3.classList.add('hidden');
+    
+    const textInput = document.getElementById('custom-company-text-input');
+    if (textInput) textInput.value = '';
+    
+    const resumeTextInput = document.getElementById('custom-resume-text-input');
+    if (resumeTextInput) resumeTextInput.value = '';
+    
+    window.customResumeFile = null;
+    const fileNameEl = document.getElementById('custom-resume-file-name');
+    if (fileNameEl) {
+      fileNameEl.textContent = '';
+      fileNameEl.classList.add('hidden');
+    }
+
+    const ind1 = document.getElementById('custom-step-indicator-1');
+    const ind2 = document.getElementById('custom-step-indicator-2');
+    const ind3 = document.getElementById('custom-step-indicator-3');
+    if (ind1) { ind1.classList.add('active'); ind1.classList.remove('completed'); }
+    if (ind2) { ind2.classList.remove('active', 'completed'); }
+    if (ind3) { ind3.classList.remove('active', 'completed'); }
+  }
 }
 
 function closeCustomCompanyModal() {
   const modal = document.getElementById('custom-company-modal');
-  if (modal) modal.classList.add('hidden');
+  if (modal) {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    const step1 = document.getElementById('custom-step-1');
+    const step2 = document.getElementById('custom-step-2');
+    const step3 = document.getElementById('custom-step-3');
+    if (step1) step1.classList.remove('hidden');
+    if (step2) step2.classList.add('hidden');
+    if (step3) step3.classList.add('hidden');
+
+    const ind1 = document.getElementById('custom-step-indicator-1');
+    const ind2 = document.getElementById('custom-step-indicator-2');
+    const ind3 = document.getElementById('custom-step-indicator-3');
+    if (ind1) { ind1.classList.add('active'); ind1.classList.remove('completed'); }
+    if (ind2) { ind2.classList.remove('active', 'completed'); }
+    if (ind3) { ind3.classList.remove('active', 'completed'); }
+  }
+}
+
+async function executeCompanyTextAnalysis() {
+  const textInput = document.getElementById('custom-company-text-input');
+  const inputText = textInput ? textInput.value.trim() : '';
+  if (!inputText) {
+    if (typeof showToast === 'function') showToast('Please enter company details', 'error');
+    else alert('Please enter company details');
+    return;
+  }
+  
+  const loading = document.getElementById('custom-analysis-loading');
+  const btn = document.getElementById('custom-analyze-btn');
+  
+  if (loading) loading.classList.remove('hidden');
+  if (btn) btn.classList.add('hidden');
+  
+  try {
+    const res = await fetch('/api/company/analyze-text', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: inputText })
+    });
+    
+    if (!res.ok) throw new Error('Analysis failed');
+    const data = await res.json();
+    
+    window.customCompanyProfile = data.analysis;
+    
+    const card = document.getElementById('custom-company-profile-card');
+    if (card) {
+      card.innerHTML = `
+        <div class="custom-profile-field">
+          <div class="custom-profile-value text-2xl font-bold mb-2">${data.analysis.name || 'Company'}</div>
+        </div>
+        <div class="custom-profile-field mb-2">
+          <span class="custom-profile-label text-slate-400 text-xs">Industry:</span>
+          <span class="custom-profile-value ml-2 text-cyan-300">${data.analysis.industry || 'N/A'}</span>
+        </div>
+        <div class="custom-profile-field mb-3">
+          <div class="custom-profile-label text-slate-400 text-xs mb-1">Description:</div>
+          <div class="custom-profile-value text-sm text-slate-300">${data.analysis.description || ''}</div>
+        </div>
+        <div class="custom-profile-field mb-3">
+          <div class="custom-profile-label text-slate-400 text-xs mb-1">Products & Services:</div>
+          <div class="custom-profile-tags flex flex-wrap gap-2">
+            ${(data.analysis.products_services || []).map(t => `<span class="custom-profile-tag px-2 py-1 bg-slate-800 rounded text-xs text-slate-300">${t}</span>`).join('')}
+          </div>
+        </div>
+        <div class="custom-profile-field mb-3">
+          <div class="custom-profile-label text-slate-400 text-xs mb-1">Technologies:</div>
+          <div class="custom-profile-tags flex flex-wrap gap-2">
+            ${(data.analysis.technologies || []).map(t => `<span class="custom-profile-tag px-2 py-1 bg-slate-800 rounded text-xs text-slate-300">${t}</span>`).join('')}
+          </div>
+        </div>
+        <div class="custom-profile-field mb-3">
+          <div class="custom-profile-label text-slate-400 text-xs mb-1">Culture & Values:</div>
+          <div class="custom-profile-value text-sm text-slate-300">${data.analysis.culture_values || ''}</div>
+        </div>
+        ${data.analysis.required_skills && data.analysis.required_skills.length ? `
+        <div class="custom-profile-field mb-3">
+          <div class="custom-profile-label text-slate-400 text-xs mb-1">Required Skills:</div>
+          <div class="custom-profile-tags flex flex-wrap gap-2">
+            ${data.analysis.required_skills.map(t => `<span class="custom-profile-tag px-2 py-1 bg-cyan-900/50 text-cyan-300 border border-cyan-500/30 rounded text-xs">${t}</span>`).join('')}
+          </div>
+        </div>
+        ` : ''}
+        <div class="custom-profile-field">
+          <div class="custom-profile-label text-slate-400 text-xs mb-1">Interview Prep Areas:</div>
+          <ul class="custom-profile-value list-disc list-inside text-sm text-slate-300">
+            ${(data.analysis.interview_prep_areas || []).map(p => `<li>${p}</li>`).join('')}
+          </ul>
+        </div>
+      `;
+    }
+    
+    const ind1 = document.getElementById('custom-step-indicator-1');
+    const ind2 = document.getElementById('custom-step-indicator-2');
+    if (ind1) { ind1.classList.remove('active'); ind1.classList.add('completed'); }
+    if (ind2) { ind2.classList.add('active'); }
+    
+    document.getElementById('custom-step-1')?.classList.add('hidden');
+    document.getElementById('custom-step-2')?.classList.remove('hidden');
+    
+  } catch (err) {
+    if (typeof showToast === 'function') showToast('Analysis error. Please try again.', 'error');
+    else alert('Analysis error');
+  } finally {
+    if (loading) loading.classList.add('hidden');
+    if (btn) btn.classList.remove('hidden');
+  }
+}
+
+function goToCustomStep3() {
+  const ind2 = document.getElementById('custom-step-indicator-2');
+  const ind3 = document.getElementById('custom-step-indicator-3');
+  if (ind2) { ind2.classList.remove('active'); ind2.classList.add('completed'); }
+  if (ind3) { ind3.classList.add('active'); }
+  
+  document.getElementById('custom-step-2')?.classList.add('hidden');
+  document.getElementById('custom-step-3')?.classList.remove('hidden');
+}
+
+function handleCustomResumeFile(event) {
+  const file = event.target.files[0];
+  if (file) {
+    window.customResumeFile = file;
+    const nameEl = document.getElementById('custom-resume-file-name');
+    if (nameEl) {
+      nameEl.textContent = '📎 ' + file.name;
+      nameEl.classList.remove('hidden');
+    }
+  }
+}
+
+async function startCustomCompanyInterview() {
+  const textInput = document.getElementById('custom-resume-text-input');
+  const resumeText = textInput ? textInput.value.trim() : '';
+  const resumeFile = window.customResumeFile;
+  
+  if (!resumeFile && !resumeText) {
+    if (typeof showToast === 'function') showToast('Please provide resume text or file', 'error');
+    else alert('Please provide resume text or file');
+    return;
+  }
+  
+  const loading = document.getElementById('custom-resume-loading');
+  const btn = document.getElementById('custom-start-interview-btn');
+  
+  if (loading) loading.classList.remove('hidden');
+  if (btn) btn.classList.add('hidden');
+  
+  try {
+    let res;
+    if (resumeFile) {
+      const formData = new FormData();
+      formData.append('file', resumeFile);
+      if (resumeText) formData.append('resume_text', resumeText);
+      
+      res = await fetch('/api/resume/parse-skills-enhanced', {
+        method: 'POST',
+        body: formData
+      });
+    } else {
+      res = await fetch('/api/resume/parse-skills-enhanced', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ resume_text: resumeText })
+      });
+    }
+    
+    if (!res.ok) throw new Error('Failed to parse resume');
+    
+    const data = await res.json();
+    window.customCandidateProfile = data.profile;
+    window.customResumeSummary = data.summary;
+    
+    closeCustomCompanyModal();
+    if (typeof launchStructuredInterview === 'function') {
+      launchStructuredInterview('custom_company');
+    }
+  } catch (err) {
+    console.error(err);
+    if (typeof showToast === 'function') showToast('Error parsing resume', 'error');
+  } finally {
+    if (loading) loading.classList.add('hidden');
+    if (btn) btn.classList.remove('hidden');
+  }
 }
 
 async function executeCompanyUrlAnalysis() {
@@ -445,10 +698,12 @@ function renderProgressChart() {
   });
 }
 
-function startDailyChallenge() {
-  state.selectedCompany = 'TCS';
-  switchPlaciflyView('simulator');
-  showToast('Launching Daily Interview Practice Challenge! 🎯', 'info');
+function startDailyChallenge(mode = 'rapid_fire') {
+  if (window.DailyChallengeEngine && typeof window.DailyChallengeEngine.startChallenge === 'function') {
+    window.DailyChallengeEngine.startChallenge(mode);
+  } else {
+    switchPlaciflyView('daily-challenge');
+  }
 }
 
 /* ==============================================================================
@@ -814,6 +1069,10 @@ function switchPlaciflyView(viewName) {
     if (typeof startAdaptiveInterviewSession === 'function') {
       startAdaptiveInterviewSession();
     }
+  } else if (viewName === 'daily-challenge') {
+    const vDaily = document.getElementById('view-daily-challenge');
+    if (vDaily) vDaily.classList.remove('hidden');
+    if (navHome) navHome.classList.remove('active');
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -876,3 +1135,33 @@ window.handleLogout = handleLogout;
 window.dismissIntroSplash = dismissIntroSplash;
 window.startDailyChallenge = startDailyChallenge;
 window.showToast = showToast;
+window.executeCompanyTextAnalysis = executeCompanyTextAnalysis;
+window.goToCustomStep3 = goToCustomStep3;
+window.handleCustomResumeFile = handleCustomResumeFile;
+window.startCustomCompanyInterview = startCustomCompanyInterview;
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Update daily streak badges on home view
+  if (window.DailyChallengeEngine && typeof window.DailyChallengeEngine.getDailyStats === 'function') {
+    const stats = window.DailyChallengeEngine.getDailyStats();
+    document.querySelectorAll('.daily-streak-badge-val').forEach(el => {
+      el.textContent = stats.dailyStreak || 1;
+    });
+  }
+
+  const dropZone = document.getElementById('custom-resume-drop-zone');
+  if (dropZone) {
+      dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+      dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('drag-over'); });
+      dropZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('drag-over');
+          const file = e.dataTransfer.files[0];
+          if (file && (file.name.endsWith('.pdf') || file.name.endsWith('.txt'))) {
+              window.customResumeFile = file;
+              document.getElementById('custom-resume-file-name').textContent = '📎 ' + file.name;
+              document.getElementById('custom-resume-file-name').classList.remove('hidden');
+          }
+      });
+  }
+});

@@ -22,5 +22,13 @@
     "verified": true,
     "created_at": 1787322626.2116168,
     "favorites": []
+  },
+  "nvanraj8488@gmail.com": {
+    "email": "nvanraj8488@gmail.com",
+    "name": "Vanraj Navlakha",
+    "password_hash": "38ebb45fd801f6e6:a8ac9f9b0c1fa9df9717cf1a892d761525635c207662221fd2c586431ec61204",
+    "verified": true,
+    "created_at": 1787473791.885835,
+    "favorites": []
   }
 }
